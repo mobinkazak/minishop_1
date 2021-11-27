@@ -68,9 +68,9 @@
                   <div>
                     <div class="d-flex align-items-center">
                       <div class="sidebar-profile-img">
-                        <img src="<?php $profile['avatar']; ?>" alt="image">
+                        <img class="rounded-circle" style="width:40px;height:30px;" src="<?php print '../'.$profile['avatar']; ?>" alt="image">
                       </div>
-                      <div class="sidebar-profile-text mr-2">
+                      <div class="sidebar-profile-text mr-3">
                         <p class="mb-1"><?php print $profile['firstname'].' '.$profile['lastname']; ?></p>
                       </div>
                     </div>

@@ -89,4 +89,31 @@ abstract class Base{
 		}
 	}
 
+	public function uploadImg($fieldName,$uploadFolderName){
+		$allowType=array('jpg','png','jpeg','gif');
+		$file=$_FILES[$fieldName];
+		$err=$file['error'];
+		if (isset($file)&&$err==0) {
+			$name=strtolower($file['name']);
+			$tmp=$file['tmp_name'];
+			$ext=pathinfo($name, PATHINFO_EXTENSION);
+			$indexType=array_search($ext,$allowType);
+			if (in_array($ext,$allowType)) {
+				$newExt=$allowType[$indexType];
+				$newName=md5('avatar').date('YmdHis').'.'.mt_rand(1111111,9999999).'.'.$newExt;
+				$res=move_uploaded_file($tmp, "$uploadFolderName/$newName");
+				if($res)
+					return $newName;//uploaded
+				else
+					return 3;//Upload file err
+
+			}else{
+				return 2;//File type err
+			}
+
+		}else{
+			return 1;//File error
+		}
+	}
+
 }

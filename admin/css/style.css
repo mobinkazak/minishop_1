@@ -270,7 +270,7 @@ span.menu-title{
 .sidebar .nav .nav-item .nav-link i.menu-arrow:before{
   content: "\f142";
 }
-.star::before{
+.star:before{
   content: '*';
   color: red !important;
   margin-right: 3px;

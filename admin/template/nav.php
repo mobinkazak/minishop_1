@@ -49,11 +49,11 @@
     </ul>
     <div class="pull-left dropdown">
       <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-          <div class="nav-profile-img ml-1">
-            <img src="<?php print $profile['avatar']; ?>" alt="image">
+          <div class="nav-profile-img">
+            <img class="rounded-circle" style="width:60px;height:30px;" src="<?php print '../'.$profile['avatar']; ?>" alt="image">
           </div>
-          <div class="nav-profile-text ml-0">
-            <p class="mt-3 text-black"><?php print $profile['firstname'].' '.$profile['lastname'] ?></p>
+          <div class="nav-profile-text">
+            <p class="m-0 text-black"><?php print $profile['firstname'].' '.$profile['lastname'] ?></p>
           </div>
         </a>
         <div class="dropdown-menu navbar-dropdown dropdown-menu-right p-0 border-0 font-size-sm" aria-labelledby="profileDropdown" data-x-placement="bottom-end">

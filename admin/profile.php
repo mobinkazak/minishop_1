@@ -47,8 +47,12 @@
 
                 <div class="card">
                   <div class="card-body">
-                    <?php $backend->setAlert('e','1','success','ویرایش با موفقیت انجام شد'); ?>
-                    <?php $backend->setAlert('e','0','success','ویرایش با موفقیت انجام شد'); ?>
+                    <?php 
+                    $backend->setAlert('e','1','success','ویرایش با موفقیت انجام شد'); 
+                    $backend->setAlert('e','0','success','ویرایش با موفقیت انجام شد'); 
+                    $backend->setAlert('e','-4','danger','نوع فایل های قابل بارگذاری فقط (jpg,png,gif,jpeg) می باشد.لطفا مجدد تلاش فرمایید');
+                    $backend->setAlert('e','-5','danger','بارگذاری عکس با مشکل مواجه شده است.لطفا مجدد تلاش فرمایید');
+                    ?>
                     <h4 class="card-title">مشخصات</h4>
                     <form enctype="multipart/form-data" id="prof_frm" class="forms-sample" method="post" action="" autocomplete="off">
                       <div class="row">
@@ -79,13 +83,26 @@
                       </div>
                       <div class="form-group">
                         <label>عکس پروفایل</label>
+                        <?php 
+                        $path='../'.$profile['avatar'];
+                        if (!empty($profile['avatar'] && file_exists($path))) {
+                          ?> 
+                          <a href="<?php print $path; ?>" target="_blank">
+                            <img style="width:160px;height:120px;" src="<?php print $path; ?>" alt="avatar">
+                          </a>
+                          <?php
+                        }else{
+                        ?>
                         <input type="file" id="img" name="img" class="file-upload-default">
                         <div class="input-group col-xs-12">
-                          <input type="text" class="form-control file-upload-info" disabled placeholder="ارسال عکس">
+                          <input type="text" class="form-control file-upload-info" disabled placeholder="بارگذاری عکس">
                           <span class="input-group-append">
                             <button class="file-upload-browse btn btn-primary" id="btn_img" type="button">انتخاب عکس</button>
                           </span>
                         </div>
+                        <?php 
+                        }
+                        ?>
                       </div>
                       <div class="px-3" style="background-color: #fff3cd;border-radius: 1%;" style="height: 300px;">
                         <div class="text-center">

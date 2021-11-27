@@ -67,6 +67,18 @@ class Backend extends Base{
 			}
 		}
 
+		$uploadRes=$this->uploadImg('img', '../avatars');
+		if (!is_int($uploadRes)) {
+			$q.=" ,avatar='avatars/$uploadRes'";
+		}else{
+			if($uploadRes==2)
+				return -4;
+			elseif($uploadRes==3)
+				return -5;
+			
+		}
+
+
 		$q.=" WHERE id='$id'";
 		return $this->query($q);
 
