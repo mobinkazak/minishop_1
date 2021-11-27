@@ -47,10 +47,10 @@
       </li>
       
     </ul>
-    <div class="pull-left dropdown">
+    <div class="text-center pull-left dropdown">
       <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
           <div class="nav-profile-img">
-            <img class="rounded-circle" style="width:60px;height:30px;" src="<?php print '../'.$profile['avatar']; ?>" alt="image">
+            <img class="img-avatar img-avatar48" style="margin-left: 4px;width:50px;height:33px;" src="<?php print '../'.$profile['avatar']; ?>" alt="image">
           </div>
           <div class="nav-profile-text">
             <p class="m-0 text-black"><?php print $profile['firstname'].' '.$profile['lastname'] ?></p>
@@ -58,7 +58,7 @@
         </a>
         <div class="dropdown-menu navbar-dropdown dropdown-menu-right p-0 border-0 font-size-sm" aria-labelledby="profileDropdown" data-x-placement="bottom-end">
           <div class="p-3 text-center bg-primary">
-            <img class="img-avatar img-avatar48 img-avatar-thumb" src="<?php $profile['avatar']; ?>" alt="">
+            <img class="img-avatar img-avatar48 img-avatar-thumb" src="<?php print '../'.$profile['avatar']; ?>" alt="">
           </div>
           <div class="p-2">
            <!--  <a class="dropdown-item py-1 d-flex align-items-center justify-content-between" href="#">

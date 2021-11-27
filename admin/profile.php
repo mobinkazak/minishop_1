@@ -5,6 +5,12 @@
     $backend->redirect('?e='.$res);
   }
 
+  if ($backend->get('del')==1) {
+    $backend->delAvatar();
+    $backend->redirect('?m=d1');
+
+  }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,6 +39,25 @@
     <link rel="shortcut icon" href="assets/images/favicon.png" />
   </head>
   <body>
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">حذف عکس پروفایل</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">آیا مایل هستید عکس پروفایل شما حذف شود؟</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">خیر</button>
+        <button type="button" class="btn btn-danger" onclick="redirect('?del=1');">حذف</button>
+      </div>
+    </div>
+  </div>
+</div>
+
     <div class="container-scroller">
     <?php require_once 'template/nav.php'; ?>
       <!-- partial -->
@@ -50,6 +75,7 @@
                     <?php 
                     $backend->setAlert('e','1','success','ویرایش با موفقیت انجام شد'); 
                     $backend->setAlert('e','0','success','ویرایش با موفقیت انجام شد'); 
+                    $backend->setAlert('m','d1','success','عکس پرفایل شما با موفقیت حذف شد'); 
                     $backend->setAlert('e','-4','danger','نوع فایل های قابل بارگذاری فقط (jpg,png,gif,jpeg) می باشد.لطفا مجدد تلاش فرمایید');
                     $backend->setAlert('e','-5','danger','بارگذاری عکس با مشکل مواجه شده است.لطفا مجدد تلاش فرمایید');
                     ?>
@@ -85,11 +111,12 @@
                         <label>عکس پروفایل</label>
                         <?php 
                         $path='../'.$profile['avatar'];
-                        if (!empty($profile['avatar'] && file_exists($path))) {
+                        if (!empty($profile['avatar']) && file_exists($path)) {
                           ?> 
                           <a href="<?php print $path; ?>" target="_blank">
-                            <img style="width:160px;height:120px;" src="<?php print $path; ?>" alt="avatar">
+                            <img style="width:150px;height:140px;" src="<?php print $path; ?>" alt="avatar">
                           </a>
+                          <button data-toggle="modal" style="margin-top:103px;" data-target="#deleteModal" type="button" class="btn btn-danger">حذف تصویر</button>
                           <?php
                         }else{
                         ?>

@@ -67,21 +67,33 @@ class Backend extends Base{
 			}
 		}
 
-		$uploadRes=$this->uploadImg('img', '../avatars');
-		if (!is_int($uploadRes)) {
-			$q.=" ,avatar='avatars/$uploadRes'";
-		}else{
-			if($uploadRes==2)
-				return -4;
-			elseif($uploadRes==3)
-				return -5;
-			
+		if (empty($currentProfile['avatar'])) 
+		{
+			$uploadRes=$this->uploadImg('img', '../avatars');
+			if (!is_int($uploadRes)) {
+				$q.=" ,avatar='avatars/$uploadRes'";
+			}else{
+				if($uploadRes==2)
+					return -4;
+				elseif($uploadRes==3)
+					return -5;
+			}
 		}
-
 
 		$q.=" WHERE id='$id'";
 		return $this->query($q);
 
+	}
+
+	public function delAvatar(){
+		$id=$_SESSION['admin_id'];
+		$currentProfile=$this->getProfile();
+		$path="../$currentProfile[avatar]";
+		if (!empty($currentProfile['avatar']) && file_exists($path)) {
+			unlink($path);
+		}
+		$q="UPDATE users SET avatar='' WHERE id='$id'";
+		$this->query($q);
 	}
 	
 }
