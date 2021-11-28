@@ -110,8 +110,9 @@ class Backend extends Base{
 			return -1;
 		}
 	}
-	public function getParentCategoryList(){
-		$q="SELECT * FROM categories WHERE parent_id='0'";
+	public function getParentCategoryList($parent_id=0){
+		$parent_id=$this->toInt($parent_id);
+		$q="SELECT * FROM categories WHERE parent_id='$parent_id'";
 		return $this->query($q);
 
 	}

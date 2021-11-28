@@ -73,15 +73,29 @@
                           $res=$backend->getParentCategoryList();
                           while ($parentRow=$backend->getRow($res)) {
                             ?>
-                            <option value="<?php print $parentRow['id'] ?>"><?php print $parentRow['title']; ?></option>
-                            <?php
+                            <option disabled></option>
+                            <option class="text-center" style="background-color: #666;color:#fff;" value="<?php print $parentRow['id'] ?>"><?php print $parentRow['title']; ?></option>
+                            <!-- <option  disabled value="">--مدل <?php //print $parentRow['title']; ?></option> -->
+                            <?php 
+                            $res2=$backend->getParentCategoryList($parentRow['id']);
+                            while ($parentRow2=$backend->getRow($res2)) {
+                            ?>
+                            <option value="<?php print $parentRow2['id'] ?>">----<?php print $parentRow2['title']; ?></option>
+
+                              <?php 
+                              $res3=$backend->getParentCategoryList($parentRow2['id']);
+                              while ($parentRow3=$backend->getRow($res3)) {
+                              ?>
+                              <option value="<?php print $parentRow3['id'] ?>">--------<?php print $parentRow3['title']; ?></option>
+
+                              <?php
+                              }
+                            }
                           }
                           ?>
+
                         </select>
                       </div>
-                      
-                      
-                      
                       <button type="submit" name="btn_add" class="btn btn-primary mr-2" value="1">ثبت</button>
                       <a href="<?php print ADMIN_URL ?>index.php" class="btn btn-light">لغو</a>
                     </form>
@@ -114,11 +128,9 @@
     <!-- Custom js for this page -->
     <script src="assets/js/dashboard.js"></script>
     <script type="text/javascript" src="js/jquery.validate.js"></script>
-
     <script src="js/lib.js"></script>
     <script>
       $(document).ready(function() {
-        
 
       });
     </script>

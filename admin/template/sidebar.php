@@ -15,8 +15,7 @@
               <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="<?php print ADMIN_URL; ?>add_cat.php">ثبت دسته جدید</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">ویرایش</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">لیست دسته ها</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="<?php print ADMIN_URL; ?>list_cat.php">لیست دسته ها</a></li>
                 </ul>
               </div>
             </li>

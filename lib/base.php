@@ -3,11 +3,16 @@ defined('DB_HOST') or die;
 abstract class Base{
 
 	private $dbLink=null;
+	public $page=null;
 
 	public function __construct(){
 		$this->dbLink=mysqli_connect(DB_HOST,DB_USER,DB_PASS) or die(mysqli_connect_error());
 		mysqli_select_db($this->dbLink,DB_NAME) or die($this->getMysqliError());
 		$this->query("SET NAMES 'UTF8'");
+		$this->page=($this->get('page')!='')? $this->toInt($this->get('page')) :1;
+		if ($this->page<=0) {
+			$this->page=1;
+		}
 	}
 	public function __destruct(){
 		if (is_resource($this->dbLink)) {
@@ -117,6 +122,22 @@ abstract class Base{
 		}else{
 			return 1;//File error
 		}
+	}
+	public function pagination($table_name,$m=4){
+		$ret=array();
+		$qCount="SELECT COUNT(*) AS c FROM $table_name ";
+		$rCount=$this->query($qCount);
+		$rowCount=$this->getRow($rCount);
+		$this->freeResult($rCount);
+		$totalRows=$rowCount['c'];
+		$totalPage=ceil($totalRows / $m);
+		$n=($m*$this->page)-$m;
+		$q = "SELECT * FROM $table_name LIMIT $n,$m";
+		$r=$this->query($q);
+		$ret['totalRows']=$totalRows;
+		$ret['totalPage']=$totalPage;
+		$ret['result']=$r;
+		return $ret;
 	}
 
 }
