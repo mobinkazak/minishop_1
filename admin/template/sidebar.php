@@ -9,15 +9,14 @@
             </li>
             <li class="nav-item nav-item2">
               <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-                <span class="menu-title"><i class="mr-2 menu-arrow"></i>UI Elements</span>
-                <span class="icon-bg"><i class="mdi mdi-crosshairs-gps menu-icon"></i></span>
-                
+                <span class="menu-title">مدیریت دسته ها</span><i class="mr-2 menu-arrow"></i>
+                <span class="icon-bg"><i class="mdi mdi-format-list-bulleted menu-icon"></i></span>
               </a>
               <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Buttons</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Dropdowns</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="<?php print ADMIN_URL; ?>add_cat.php">ثبت دسته جدید</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">ویرایش</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">لیست دسته ها</a></li>
                 </ul>
               </div>
             </li>

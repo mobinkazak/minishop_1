@@ -67,19 +67,16 @@ class Backend extends Base{
 			}
 		}
 
-		if (empty($currentProfile['avatar'])) 
-		{
-			$uploadRes=$this->uploadImg('img', '../avatars');
-			if (!is_int($uploadRes)) {
-				$q.=" ,avatar='avatars/$uploadRes'";
-			}else{
-				if($uploadRes==2)
-					return -4;
-				elseif($uploadRes==3)
-					return -5;
-			}
+		$uploadRes=$this->uploadImg('img', '../avatars');
+		if (!is_int($uploadRes)) {
+			$q.=" ,avatar='avatars/$uploadRes'";
+		}else{
+			if($uploadRes==2)
+				return -4;
+			elseif($uploadRes==3)
+				return -5;
 		}
-
+		
 		$q.=" WHERE id='$id'";
 		return $this->query($q);
 
@@ -89,11 +86,33 @@ class Backend extends Base{
 		$id=$_SESSION['admin_id'];
 		$currentProfile=$this->getProfile();
 		$path="../$currentProfile[avatar]";
+		$path2="avatars/avatar.png";
 		if (!empty($currentProfile['avatar']) && file_exists($path)) {
 			unlink($path);
 		}
-		$q="UPDATE users SET avatar='' WHERE id='$id'";
+		$q="UPDATE users SET avatar='$path2' WHERE id='$id'";
 		$this->query($q);
 	}
-	
+	public function checkCategory($title,$parent_id){
+		$title=$this->safeString($title);
+		$parent_id=$this->toInt($parent_id);
+		$q="SELECT id FROM categories WHERE title='$title' AND parent_id='$parent_id'";
+		$r=$this->query($q);
+		return $r->num_rows;
+	}
+	public function addCategory(){
+		$parent_id=$this->toInt($this->post('parent_id'));
+		$title=$this->safeString($this->post('title'));
+		if ($this->checkCategory($title,$parent_id)==0) {
+			$q="INSERT INTO categories VALUES('NULL','$title','$parent_id')";
+			return $this->query($q);
+		}else{
+			return -1;
+		}
+	}
+	public function getParentCategoryList(){
+		$q="SELECT * FROM categories WHERE parent_id='0'";
+		return $this->query($q);
+
+	}
 }

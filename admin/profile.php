@@ -2,7 +2,7 @@
   $profile=$backend->getProfile();
   if ($backend->post('btn_save')) {
     $res=$backend->saveProfile();
-    $backend->redirect('?e='.$res);
+    $backend->redirect('?t='.$res);
   }
 
   if ($backend->get('del')==1) {
@@ -73,11 +73,11 @@
                 <div class="card">
                   <div class="card-body">
                     <?php 
-                    $backend->setAlert('e','1','success','ویرایش با موفقیت انجام شد'); 
-                    $backend->setAlert('e','0','success','ویرایش با موفقیت انجام شد'); 
+                    $backend->setAlert('t','1','success','ویرایش با موفقیت انجام شد'); 
+                    $backend->setAlert('t','0','success','ویرایش با موفقیت انجام شد'); 
                     $backend->setAlert('m','d1','success','عکس پرفایل شما با موفقیت حذف شد'); 
-                    $backend->setAlert('e','-4','danger','نوع فایل های قابل بارگذاری فقط (jpg,png,gif,jpeg) می باشد.لطفا مجدد تلاش فرمایید');
-                    $backend->setAlert('e','-5','danger','بارگذاری عکس با مشکل مواجه شده است.لطفا مجدد تلاش فرمایید');
+                    $backend->setAlert('t','-4','danger','نوع فایل های قابل بارگذاری فقط (jpg,png,gif,jpeg) می باشد.لطفا مجدد تلاش فرمایید');
+                    $backend->setAlert('t','-5','danger','بارگذاری عکس با مشکل مواجه شده است.لطفا مجدد تلاش فرمایید');
                     ?>
                     <h4 class="card-title">مشخصات</h4>
                     <form enctype="multipart/form-data" id="prof_frm" class="forms-sample" method="post" action="" autocomplete="off">
@@ -100,7 +100,7 @@
                         <label for="email1">ایمیل</label><span class="star"></span>
                         <input type="email" class="form-control" name="email" value="<?php print $profile['email']; ?>" id="email1">
                       </div>
-                      <?php $backend->setAlert('e','-1','danger','ایمیل وارد شده وجود دارد');?>
+                      <?php $backend->setAlert('t','-1','danger','ایمیل وارد شده وجود دارد');?>
                       <div>
                         <div class="form-group">
                           <label for="address">آدرس</label>
@@ -111,7 +111,19 @@
                         <label>عکس پروفایل</label>
                         <?php 
                         $path='../'.$profile['avatar'];
-                        if (!empty($profile['avatar']) && file_exists($path)) {
+                        $path2='../avatars/avatar.png';
+                        if ($profile['avatar']=='avatars/avatar.png' && file_exists($path2)) {
+                          ?>
+                          <input type="file" id="img" name="img" class="file-upload-default">
+                        <div class="input-group col-xs-12">
+                          <input type="text" class="form-control file-upload-info" disabled placeholder="بارگذاری عکس">
+                          <span class="input-group-append">
+                            <button class="file-upload-browse btn btn-primary" id="btn_img" type="button">انتخاب عکس</button>
+                          </span>
+                        </div>
+                          <?php
+                        }
+                        elseif (!empty($profile['avatar']) && file_exists($path)) {
                           ?> 
                           <a href="<?php print $path; ?>" target="_blank">
                             <img style="width:150px;height:140px;" src="<?php print $path; ?>" alt="avatar">
@@ -139,7 +151,7 @@
                           <label for="password1">رمزعبور فعلی</label>
                           <input type="password" class="form-control" name="password1" id="password1">
                         </div>
-                      <?php $backend->setAlert('e','-2','danger','رمزعبور فعلی صحیح نمی باشد');?>
+                      <?php $backend->setAlert('t','-2','danger','رمزعبور فعلی صحیح نمی باشد');?>
 
                         <div class="form-group">
                           <label for="password2">رمزعبور جدید</label>
@@ -149,7 +161,7 @@
                           <label for="password3"> تکرار رمزعبور جدید </label>
                           <input type="password" class="form-control" name="password3" id="password3">
                         </div>
-                        <?php $backend->setAlert('e','-3','danger','تکرار رمزعبور جدید صحیح نمی باشد');?>
+                        <?php $backend->setAlert('t','-3','danger','تکرار رمزعبور جدید صحیح نمی باشد');?>
 
                         <div class="alert alert-warning"></div>
                       </div>

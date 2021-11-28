@@ -68,6 +68,9 @@ abstract class Base{
 	public function toInt($str){
 		return (int)$str;
 	}
+	public function toFloat($str){
+		return (float)$str;
+	}
 	public function persianDate($date){
 		$dateArray=explode(' ',$date);
         $dateArr=explode('-',$dateArray[0]);
