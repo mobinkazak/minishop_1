@@ -1,9 +1,13 @@
 <?php require_once '../loader.php'; 
   $resPagination=$backend->pagination('categories',5);
-  
+  if (isset($_SESSION['limit'])) {
+    $resPagination=$backend->pagination('categories',$_SESSION['limit']);
+    }  
 if ($backend->page > $resPagination['totalPage']) {
-    $backend->redirect('?page=1');
+    $backend->redirect('?p=1');
    }   
+
+   $url="?";
   
 ?>
 <!DOCTYPE html>
@@ -58,8 +62,10 @@ if ($backend->page > $resPagination['totalPage']) {
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title">لیست دسته ها</h4>
-                    <p class="card-description"> Add class <code>.table-bordered</code>
-                    </p>
+                    <div class="card-description">
+                      <?php $backend->showLimitTable($url); ?>
+                    </div>
+                    
                     <table class="table table-bordered">
                       <thead>
                         <tr>
@@ -88,7 +94,9 @@ if ($backend->page > $resPagination['totalPage']) {
                         ?>
                       </tbody>
                     </table>
+
                   </div>
+                  <?php $backend->renderPagination($url,$resPagination['totalPage']); ?>
                 </div>
                   <?php 
                   }

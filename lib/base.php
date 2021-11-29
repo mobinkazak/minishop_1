@@ -4,15 +4,30 @@ abstract class Base{
 
 	private $dbLink=null;
 	public $page=null;
+	public $limit=null;
 
 	public function __construct(){
 		$this->dbLink=mysqli_connect(DB_HOST,DB_USER,DB_PASS) or die(mysqli_connect_error());
 		mysqli_select_db($this->dbLink,DB_NAME) or die($this->getMysqliError());
 		$this->query("SET NAMES 'UTF8'");
-		$this->page=($this->get('page')!='')? $this->toInt($this->get('page')) :1;
+		$this->page=($this->get('p')!='')? $this->toInt($this->get('p')) :1;
 		if ($this->page<=0) {
 			$this->page=1;
 		}
+
+        $this->limit = $this->toInt($this->get('limit'));
+
+		if (!isset($this->limit)) {
+			$_SESSION['limit']=10;
+		}
+
+		if ($this->limit>0) {
+			if ($this->limit <= 0) {
+				$this->limit=10;
+			}
+			$_SESSION['limit']=$this->limit;
+		}
+
 	}
 	public function __destruct(){
 		if (is_resource($this->dbLink)) {
@@ -138,6 +153,85 @@ abstract class Base{
 		$ret['totalPage']=$totalPage;
 		$ret['result']=$r;
 		return $ret;
+	}
+	public function renderPagination($url,$totalPage){
+		//Fast backward
+		if ($this->page==$totalPage) {
+			$lastPageHref='javascript:void(0);';
+			$lastPageClass='disabled';
+		}else{
+			$lastPageHref=$url.'&p='.$totalPage;
+			$lastPageClass='';
+
+		}
+		//Fast Forward
+		if ($this->page==1) {
+			$firstPageHref='javascript:void(0);';
+			$firstPageClass='disabled';
+		}else{
+			$firstPageHref=$url.'&p=1';
+			$firstPageClass='';
+
+		}
+		// Next page
+		if ($this->page >= $totalPage) {
+			$nextPageHref='javascript:void(0);';
+			$nextPageClass='disabled';
+		}else{
+			
+			$nextPageHref=$url.'&p='.($this->page+1);
+			$nextPageClass='';
+		}
+		// Prev page
+		if ($this->page <=1) {
+			$prevPageHref='javascript:void(0);';
+			$prevPageClass='disabled';
+
+		}else{
+			$prevPageHref=$url.'&p='.($this->page-1);
+			$prevPageClass='';
+		}
+		?>
+		<nav class="text-center mx-auto" dir="ltr" aria-label="Page navigation example">
+	        <ul class="pagination">
+	          <li class="page-item <?php print $firstPageClass; ?> "><a class="page-link" title="صفحه اول" data-toggle="tooltip" href="<?php print $firstPageHref; ?>"><i class="mdi mdi-arrow-collapse-left"></i></a></li>
+
+	          <li class="page-item <?php print $prevPageClass; ?>"><a class="page-link" data-toggle="tooltip" title="صفحه  قبل" href="<?php print $prevPageHref; ?>"><i class="mdi mdi-arrow-left"></i></a></li>
+
+	          <li class="page-item"><div class="page-link">
+	            <input data-total-page="<?php print $totalPage; ?>" data-url="<?php print $url; ?>" id="page" type="text" class="form-control text-center col-md-12 mr-2 d-inline" style="width:100px;" data-container="body" data-toggle="popover" data-placement="top" data-content="صفحه مورد نظر وجود ندارد" value="<?php print $this->page ?>" >
+	            <span>-----</span>
+	            <span class="ml-1"><?php print $totalPage; ?></span>
+	          </div></li>
+
+	          <li class="page-item <?php print $nextPageClass; ?>"><a class="page-link" href="<?php print $nextPageHref; ?>" data-toggle="tooltip" title="صفحه بعد"><i class="mdi mdi-arrow-right"></i></a></li>
+
+	          <li class="page-item <?php print $lastPageClass; ?>"><a class="page-link" title="صفحه آخر" data-toggle="tooltip" href="<?php print $lastPageHref; ?>"><i class="mdi mdi-arrow-collapse-right"></i></a></li>
+	        </ul>
+		</nav>
+		<?php
+	}
+	public function showLimitTable($url){
+		?>
+		<div class="input-group" style="font-size:14px;">
+		<select class="" name="limit" id="limit" data-url="<?php print $url; ?>" style="border:1px solid #9f9f9f;color:#666" class="form-select" aria-label="Default select example">
+			<option disabled selected >فیلتر خود را انتخاب کنید</option>
+		<?php 
+		for ($i=10; $i <= 100 ; $i+=10) { 
+				$sel=($_SESSION['limit']==$i)?'selected':'';
+			?>
+			<option <?php print $sel; ?> value="<?php print $i; ?>"><?php print $i; ?></option>
+			<?php
+
+		}
+		?>
+		</select>
+		<div class="input-group-prepend">
+			<a style="font-size:14px;" href="<?php print $url ?>&f=0" class="btn btn-info">پاک کن <i style="font-size:16px;" class="mdi mdi-auto-fix"></i></a>
+		</div>
+		</div>
+
+		<?php
 	}
 
 }

@@ -18,11 +18,17 @@ if (stristr($_SERVER['REQUEST_URI'],'/admin/')) {
 		}
 	}
 	if ($backend->get('logout')==1) {
-	$backend->beforeLogout();
-    unset($_SESSION['admin_id']);
-    session_destroy();
-    $backend->redirect('login.php?msg=logout');
+		$backend->beforeLogout();
+	    unset($_SESSION['admin_id']);
+	    session_destroy();
+	    $backend->redirect('login.php?msg=logout');
   	}
+
+  	if ($backend->get('f')==0) {
+	    unset($_SESSION['limit']);
+	    $backend->redirect('?');
+  	}
+
 }else{
 	require_once 'lib/frontend.php';
 	$frontend=new Frontend();

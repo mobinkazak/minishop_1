@@ -7,7 +7,7 @@ html {
 
 }
 
-body {
+body,.tooltip,.popover {
   font-family: Vazir !important;
 
 }
@@ -275,4 +275,7 @@ span.menu-title{
   color: red !important;
   margin-right: 3px;
 
+}
+.page-link{
+  line-height: 2.6 !important;
 }
