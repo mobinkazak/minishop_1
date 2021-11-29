@@ -138,16 +138,21 @@ abstract class Base{
 			return 1;//File error
 		}
 	}
-	public function pagination($table_name,$m=4){
+	public function pagination($table_name,$m=4,$where=''){
+		if ($where=='') {
+			$where='';
+		}else{
+			$where= ' WHERE 1=1 '.$where;
+		}
 		$ret=array();
-		$qCount="SELECT COUNT(*) AS c FROM $table_name ";
+		$qCount="SELECT COUNT(*) AS c FROM $table_name $where";
 		$rCount=$this->query($qCount);
 		$rowCount=$this->getRow($rCount);
 		$this->freeResult($rCount);
 		$totalRows=$rowCount['c'];
 		$totalPage=ceil($totalRows / $m);
 		$n=($m*$this->page)-$m;
-		$q = "SELECT * FROM $table_name LIMIT $n,$m";
+		$q = "SELECT * FROM $table_name $where LIMIT $n,$m";
 		$r=$this->query($q);
 		$ret['totalRows']=$totalRows;
 		$ret['totalPage']=$totalPage;
@@ -214,8 +219,8 @@ abstract class Base{
 	public function showLimitTable($url){
 		?>
 		<div class="input-group" style="font-size:14px;">
-		<select class="" name="limit" id="limit" data-url="<?php print $url; ?>" style="border:1px solid #9f9f9f;color:#666" class="form-select" aria-label="Default select example">
-			<option disabled selected >فیلتر خود را انتخاب کنید</option>
+		<select class="px-1" name="limit" id="limit" data-url="<?php print $url; ?>" style="border:1px solid #ddd;color:#666" class="form-select" aria-label="Default select example">
+			<option  disabled selected >برای فیلتر کردن جدول انتخاب کنید</option>
 		<?php 
 		for ($i=10; $i <= 100 ; $i+=10) { 
 				$sel=($_SESSION['limit']==$i)?'selected':'';

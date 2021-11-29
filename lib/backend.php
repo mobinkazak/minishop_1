@@ -114,6 +114,14 @@ class Backend extends Base{
 		$parent_id=$this->toInt($parent_id);
 		$q="SELECT * FROM categories WHERE parent_id='$parent_id'";
 		return $this->query($q);
+	}
+	public function getParentTitle($id){
+		$id=$this->toInt($id);
+		$q="SELECT * FROM categories WHERE id='$id'";
+		$res=$this->query($q);
+		$row=$this->getRow($res);
+		$this->freeResult($res);
+		return $row;
 
 	}
 }
