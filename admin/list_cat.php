@@ -5,8 +5,13 @@
    }else{
       $parent_id=$backend->toInt($backend->get('parent_id'));
    }
-
    $url="?title=$title&parent_id=$parent_id";
+
+   if ($backend->get('f')==0) {
+       unset($_SESSION['limit']);
+       $backend->redirect($url);
+   }
+
    $where='';
    if (!empty($title)) {
       $where.=" AND title LIKE '%$title%' ";
@@ -78,10 +83,12 @@
                      <div class="card">
                         <div class="card-body">
                            <h4 class="card-title">لیست دسته ها</h4>
-                           <div class="card-description">
-                              <form class="form-inline" method="get" action="">
-                                 <div class="input-group">
-                                    <input class="px-2" value="<?php print $title; ?>" data-toggle="tooltip" title="عنوان دسته را وارد کنید" style="border:1px solid #ddd;" type="text" name="title" placeholder="عنوان دسته">
+                           <div class="card-description py-3" style="background-color: #181824;border-radius: 3px;">
+                              <div class="col-md-12">
+                              <form method="get" action="">
+                                 <div class="input-group mx-auto">
+                                    
+                                    <input class="px-3 py-3" value="<?php print $title; ?>" data-toggle="tooltip" title="عنوان دسته را وارد کنید" style="width: 30%;border:1px solid #ddd;" type="text" name="title" placeholder="عنوان دسته">
                                     <div class="input-group-append">
                                        <select style="font-size:14px;border:1px solid #ddd;" name="parent_id" id="parent_id">
                                           <option <?php ($parent_id == -1)?print 'selected':print ''; ?> value="-1">دسته ای مورد نظر را انتخاب کنید</option>
@@ -105,18 +112,21 @@
                                           }
                                           ?>
                                        </select>
-                                       <button data-toggle="tooltip" title="جستجو" type="submit" class="btn btn-success"><i style="font-size:15px" class="mdi mdi-magnify"></i></button>
-                                       <button type="button" onclick="redirect('?');" data-toggle="tooltip" title="پاک کن" class="btn btn-info"><i style="font-size:15px" class="mdi mdi-auto-fix"></i></button>
+                                       <button data-toggle="tooltip" title="جستجو" type="submit" class="btn btn-success px-3"> جستجو <i style="font-size:15px" class="mdi mdi-magnify"></i></button>
+                                       <button type="button" onclick="redirect('?');" data-toggle="tooltip" title="پاک کن" class="btn btn-info px-3">پاک کن <i style="font-size:15px" class="mdi mdi-auto-fix"></i></button>
+
                                     </div>
                                  </div>
                               </form>
+                              </div>
                            </div>
-                           
+                           <?php $backend->showLimitTable($url); ?>
+
                            <table class="table table-bordered">
                               <thead>
                                  <tr>
-                                    <th> # </th>
-                                    <th> عنوان دسته </th>
+                                    <th> <?php $backend->tableFieldSort($url,'ردیف','id') ?> </th>
+                                    <th><?php $backend->tableFieldSort($url,' عنوان دسته ','title') ?></th>
                                     <th> دسته ها </th>
                                     <th width="20px"> ویرایش </th>
                                     <th width="20px"> حذف </th>
@@ -128,7 +138,7 @@
                                     $parent=$backend->getParentTitle($row['parent_id']);
                                  ?>
                                  <tr>
-                                    <td> 1 </td>
+                                    <td> <?php print $row['id'] ?> </td>
                                     <td><?php print $row['title'] ?></td>
                                     <td>
                                        <?php ($row['parent_id']==0)?print 'دسته اصلی':print $parent['title']; ?>
@@ -141,7 +151,7 @@
                                  ?>
                               </tbody>
                            </table>
-                           <?php $backend->showLimitTable($url); ?>
+                           <?php //$backend->showLimitTable($url); ?>
                         </div>
                         <?php $backend->renderPagination($url,$resPagination['totalPage']); ?>
                      </div>

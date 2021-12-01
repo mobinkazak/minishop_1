@@ -28,6 +28,31 @@ abstract class Base{
 			$_SESSION['limit']=$this->limit;
 		}
 
+		if (!isset($_SESSION['sort'])) {
+			$_SESSION['sort']='asc';
+		}
+
+		$sort=$this->safeString($this->get('sort'));
+		if (!empty($sort)) {
+			if ($sort == 'desc') {
+				$sort='desc';				
+			}else{
+				$sort='asc';
+			}
+			$_SESSION['sort']=$sort;
+		}
+
+
+
+		if (!isset($_SESSION['field'])) {
+			$_SESSION['field']='id';
+		}
+		$field=$this->safeString($this->get('fd'));
+		if (!empty($field)) {
+			$_SESSION['field']=$field;
+		}
+
+
 	}
 	public function __destruct(){
 		if (is_resource($this->dbLink)) {
@@ -152,7 +177,8 @@ abstract class Base{
 		$totalRows=$rowCount['c'];
 		$totalPage=ceil($totalRows / $m);
 		$n=($m*$this->page)-$m;
-		$q = "SELECT * FROM $table_name $where LIMIT $n,$m";
+		$order=" ORDER BY {$_SESSION['field']} {$_SESSION['sort']} ";
+		$q = "SELECT * FROM $table_name $where $order LIMIT $n,$m";
 		$r=$this->query($q);
 		$ret['totalRows']=$totalRows;
 		$ret['totalPage']=$totalPage;
@@ -220,7 +246,7 @@ abstract class Base{
 		?>
 		<div class="input-group" style="font-size:14px;">
 		<select class="px-1" name="limit" id="limit" data-url="<?php print $url; ?>" style="border:1px solid #ddd;color:#666" class="form-select" aria-label="Default select example">
-			<option  disabled selected >برای فیلتر کردن جدول انتخاب کنید</option>
+			<option  disabled selected>برای فیلتر کردن جدول انتخاب کنید</option>
 		<?php 
 		for ($i=10; $i <= 100 ; $i+=10) { 
 				$sel=($_SESSION['limit']==$i)?'selected':'';
@@ -237,6 +263,41 @@ abstract class Base{
 		</div>
 
 		<?php
+	}
+
+	public function tableFieldSort($url,$title,$field){
+		$title=$this->safeString($title);
+		$field=$this->safeString($field);
+
+		if ($_SESSION['sort'] =='asc') {
+			$url2="$url&fd=$field&sort=desc";
+			$span='<span style="font-size:16px;" class="mdi mdi-chevron-double-up"></span>';
+		}elseif($_SESSION['sort']=='desc'){
+			$url2="$url&fd=$field&sort=asc";
+			$span='<span style="font-size:16px;" class="mdi mdi-chevron-double-down"></span>';
+		}
+
+		if ($_SESSION['field']==$field) {
+			?>
+			<a href="<?php print $url2 ?>">
+				<?php
+				print $title; 
+				print $span;
+				?>
+			</a>
+			<?php
+		}else{
+			?>
+			<a href="<?php print $url2 ?>">
+				<?php
+				print $title; 
+				?>
+			</a>
+			<?php
+
+		}
+
+
 	}
 
 }

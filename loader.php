@@ -24,10 +24,7 @@ if (stristr($_SERVER['REQUEST_URI'],'/admin/')) {
 	    $backend->redirect('login.php?msg=logout');
   	}
 
-  	if ($backend->get('f')==0) {
-	    unset($_SESSION['limit']);
-	    $backend->redirect('?');
-  	}
+  	
 
 }else{
 	require_once 'lib/frontend.php';
