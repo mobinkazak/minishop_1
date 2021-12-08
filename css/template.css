@@ -1,0 +1,27 @@
+html,body,span,div,h1, h2, h3, h4, h5, h6,button,input{
+	font-family: Vazir !important;
+}
+form{
+	direction: rtl !important;
+}
+.btn-color{
+	border-top-right-radius: 0 !important;
+	border-top-left-radius: 5px !important;
+	border-bottom-right-radius: 0 !important;
+	border-bottom-left-radius: 5px !important;
+	padding: 4px 15px;
+}
+.footer-area-content .footer-wrapper .type-1{
+	direction: rtl;
+	text-align: center;
+
+}
+.footer-logo{
+	margin: 0 auto;
+}
+.star:after{
+	content: '*';
+	font-size:12px;
+	font-weight: normal;
+	color: red;
+}
