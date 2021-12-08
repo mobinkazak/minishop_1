@@ -10,24 +10,29 @@ abstract class Base{
 		$this->dbLink=mysqli_connect(DB_HOST,DB_USER,DB_PASS) or die(mysqli_connect_error());
 		mysqli_select_db($this->dbLink,DB_NAME) or die($this->getMysqliError());
 		$this->query("SET NAMES 'UTF8'");
+		//Pagination
 		$this->page=($this->get('p')!='')? $this->toInt($this->get('p')) :1;
 		if ($this->page<=0) {
 			$this->page=1;
 		}
 
+		//Show limit table
         $this->limit = $this->toInt($this->get('limit'));
-
 		if (!isset($this->limit)) {
-			$_SESSION['limit']=10;
+			$_SESSION['limit']=5;
+		}
+		if (!isset($_SESSION['limit'])) {
+			$_SESSION['limit']=5;
 		}
 
 		if ($this->limit>0) {
 			if ($this->limit <= 0) {
-				$this->limit=10;
+				$this->limit=5;
 			}
 			$_SESSION['limit']=$this->limit;
 		}
 
+		//table sorting
 		if (!isset($_SESSION['sort'])) {
 			$_SESSION['sort']='asc';
 		}
@@ -41,9 +46,7 @@ abstract class Base{
 			}
 			$_SESSION['sort']=$sort;
 		}
-
-
-
+		//table sorting
 		if (!isset($_SESSION['field'])) {
 			$_SESSION['field']='id';
 		}
@@ -163,12 +166,14 @@ abstract class Base{
 			return 1;//File error
 		}
 	}
-	public function pagination($table_name,$m=4,$where=''){
+
+	public function pagination($table_name,$where=''){
 		if ($where=='') {
 			$where='';
 		}else{
 			$where= ' WHERE 1=1 '.$where;
 		}
+		$m=$_SESSION['limit'];
 		$ret=array();
 		$qCount="SELECT COUNT(*) AS c FROM $table_name $where";
 		$rCount=$this->query($qCount);
@@ -247,6 +252,7 @@ abstract class Base{
 		<div class="input-group" style="font-size:14px;">
 		<select class="px-1" name="limit" id="limit" data-url="<?php print $url; ?>" style="border:1px solid #ddd;color:#666" class="form-select" aria-label="Default select example">
 			<option  disabled selected>برای فیلتر کردن جدول انتخاب کنید</option>
+			<option <?php ($_SESSION['limit']==5)?print 'selected': print ''; ?> value="5">5</option>
 		<?php 
 		for ($i=10; $i <= 100 ; $i+=10) { 
 				$sel=($_SESSION['limit']==$i)?'selected':'';
@@ -257,9 +263,7 @@ abstract class Base{
 		}
 		?>
 		</select>
-		<div class="input-group-prepend">
-			<a style="font-size:14px;" href="<?php print $url ?>&f=0" class="btn btn-info">پاک کن <i style="font-size:16px;" class="mdi mdi-auto-fix"></i></a>
-		</div>
+		
 		</div>
 
 		<?php
@@ -290,7 +294,7 @@ abstract class Base{
 			?>
 			<a href="<?php print $url2 ?>">
 				<?php
-				print $title; 
+				print $title;
 				?>
 			</a>
 			<?php
@@ -299,5 +303,40 @@ abstract class Base{
 
 
 	}
+	public function renderId($totalRows){
+		$idList=1;
+		if ($_SESSION['sort']=='asc') {
+			// $idList=1*($this->page*$_SESSION['limit'])-$_SESSION['limit']+1;
+			$idList=(($this->page*$_SESSION['limit'])-$_SESSION['limit'])+1;
+			return $idList;
+		}else{
+			if ($this->page<=1) {
+				$idList=$totalRows-($this->page*$_SESSION['limit'])+$_SESSION['limit'];
+				return $idList;
+			}
+
+		}
+	}
+	public function getParentCategoryList($parent_id=0,$order=''){
+		if (!empty($order)) {
+			$order2=" ORDER BY $order ASC";
+		}else{
+			$order='';
+		}
+		$parent_id=$this->toInt($parent_id);
+		$q="SELECT * FROM categories WHERE parent_id='$parent_id' $order2 ";
+		return $this->query($q);
+	}
+
+	public function getCategoryTitle($id){
+		$id=$this->toInt($id);
+		$q="SELECT * FROM categories WHERE id='$id'";
+		$res=$this->query($q);
+		$row=$this->getRow($res);
+		$this->freeResult($res);
+		return $row;
+
+	}
+
 
 }

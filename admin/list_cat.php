@@ -7,10 +7,6 @@
    }
    $url="?title=$title&parent_id=$parent_id";
 
-   if ($backend->get('f')==0) {
-       unset($_SESSION['limit']);
-       $backend->redirect($url);
-   }
 
    $where='';
    if (!empty($title)) {
@@ -20,15 +16,11 @@
    if ($parent_id >= 0) {
       $where.=" AND parent_id='$parent_id' ";
    }
+   $resPagination=$backend->pagination('categories',$where);
 
-   $resPagination=$backend->pagination('categories',5,$where);
-
-   if (isset($_SESSION['limit'])) {
-      $resPagination=$backend->pagination('categories',$_SESSION['limit'],$where);
-   }
-
-   if ($backend->page > $resPagination['totalPage']) {
-      $backend->redirect('?p=1');
+   if ($backend->get('del_id')) {
+      $resDel=$backend->deleteCategory($backend->get('del_id'));
+      $backend->redirect("$url&p=$backend->page&d=$resDel");
    }
 
 
@@ -60,6 +52,37 @@
       <link rel="shortcut icon" href="assets/images/favicon.png" />
    </head>
    <body>
+
+      <div class="modal" id="deleteModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">حذف رکورد <span id="delete-id"></span></h5>
+              
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <span>
+               آیا میخواهید رکورد 
+               <b id="delete-title" class="text-danger border-bottom"></b>
+               حذف شود؟
+              </span>
+            </div>
+
+            <div class="modal-footer">
+               <div id="delete-notice" class="d-none text-danger flex-grow-1">
+                 <p>بدلیل دارا بودن فرزند قابل حذف نمی باشد</p>
+               </div>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">لغو</button>
+              <button id="delete-btn" type="button" class="btn btn-danger">حذف</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
       <!-- Modal -->
       <div class="container-scroller">
          <?php require_once 'template/nav.php'; ?>
@@ -72,9 +95,9 @@
                <div class="container">
                   <div class="col-lg-12 grid-margin stretch-card">
                      <?php
-                     if ($resPagination['totalRows']==0) {
+                     if ($resPagination['totalRows']==0 && $where=='') {
                      ?>
-                     <div class="col-md-8 text-center mx-auto mt-5">
+                     <div class="col-md-12 text-center mx-auto mt-5">
                         <?php $backend->setAlert('','','warning','هیچ رکوردی برای نمایش یافت نشد');?>
                      </div>
                      <?php
@@ -120,38 +143,53 @@
                               </form>
                               </div>
                            </div>
-                           <?php $backend->showLimitTable($url); ?>
+                           <div class="text-center">
+                           <?php $backend->setAlert('d','1','success','رکورد مورد نظر با موفقیت حذف شد'); ?>
+                           <?php $backend->setAlert('d','0','danger','بدلیل دارا بودن فرزند قابل حذف نمی باشد'); ?>
+                           </div>
+                           <?php $backend->showLimitTable($url); 
+
+                           if ($resPagination['totalRows']==0 && $where != '') {
+                           ?>
+                           <div class="col-md-12 text-center mx-auto mt-5">
+                              <?php $backend->setAlert('','','warning','هیچ رکوردی برای نمایش یافت نشد');?>
+                           </div>
+                           <?php
+                           }
+
+                           ?>
 
                            <table class="table table-bordered">
                               <thead>
                                  <tr>
-                                    <th> <?php $backend->tableFieldSort($url,'ردیف','id') ?> </th>
-                                    <th><?php $backend->tableFieldSort($url,' عنوان دسته ','title') ?></th>
+                                    <th width="10px"><?php $backend->tableFieldSort($url,'ردیف','id'); ?></th>
+                                    <th><?php $backend->tableFieldSort($url,' عنوان دسته ','title'); ?></th>
                                     <th> دسته ها </th>
-                                    <th width="20px"> ویرایش </th>
-                                    <th width="20px"> حذف </th>
+                                    <th width="10px"> ویرایش </th>
+                                    <th width="10px"> حذف </th>
                                  </tr>
                               </thead>
                               <tbody>
                                  <?php
+                                    $idList=$backend->renderId($resPagination['totalRows']);
                                  while ($row=$backend->getRow($resPagination['result'])) {
-                                    $parent=$backend->getParentTitle($row['parent_id']);
+                                    $parent=$backend->getCategoryTitle($row['parent_id']);
                                  ?>
                                  <tr>
-                                    <td> <?php print $row['id'] ?> </td>
+                                    <td  class="text-center"> <?php print $idList; ?> </td>
                                     <td><?php print $row['title'] ?></td>
                                     <td>
                                        <?php ($row['parent_id']==0)?print 'دسته اصلی':print $parent['title']; ?>
                                     </td>
-                                    <td><button type="button" class="btn btn-warning">ویرایش</button></td>
-                                    <td><button type="button" class="btn btn-danger">حذف</button></td>
+                                    <td><a href="<?php print ADMIN_URL ?>edit_cat.php<?php print $url; ?>&rowId=<?php print $row['id']; ?>&p=<?php print $backend->page; ?>" class="btn btn-warning">ویرایش</a></td>
+                                    <td><button data-id="<?php print $row['id']; ?>" data-child="<?php print $backend->getCountChildForCategory($row['id']); ?>" data-idlist="<?php print $idList; ?>" data-title="<?php print $row['title']; ?>" data-toggle="modal" data-target="#deleteModal" type="button" class="btn btn-danger">حذف</button></td>
                                  </tr>
                                  <?php
+                                 ($_SESSION['sort']=='asc')?$idList++:$idList--;
                                  }
                                  ?>
                               </tbody>
                            </table>
-                           <?php //$backend->showLimitTable($url); ?>
                         </div>
                         <?php $backend->renderPagination($url,$resPagination['totalPage']); ?>
                      </div>
@@ -189,6 +227,31 @@
       <script src="js/lib.js"></script>
       <script>
       $(document).ready(function() {
+         $('#deleteModal').on('shown.bs.modal',function(event) {
+            var button=$(event.relatedTarget);
+            var title=button.data('title');
+            var idlist=button.data('idlist');
+            var child=button.data('child');
+            var id=button.data('id');
+            $(this).find('#delete-title').html(title);
+            $(this).find('#delete-id').html(idlist);
+            $(this).find('#delete-btn').attr('data-del-id',id);
+            if(child!=0){
+               $(this).find('#delete-notice').removeClass('d-none').addClass('d-flex');
+               $(this).find('#delete-btn').attr('disabled','disabled');
+
+            }else{
+               $(this).find('#delete-notice').removeClass('d-flex').addClass('d-none');
+               $(this).find('#delete-btn').removeAttr('disabled');
+            }
+         });
+
+         $('#delete-btn').click(function() {
+            var id=$(this).attr('data-del-id');
+            redirect('<?php print "$url&p=$backend->page&del_id=" ?>'+id);
+         });
+
+
       });
       </script>
       <!-- End custom js for this page -->

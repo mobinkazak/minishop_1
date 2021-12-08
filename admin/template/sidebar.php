@@ -1,4 +1,6 @@
-<?php $profile=$backend->getProfile(); ?>
+<?php $profile=$backend->getProfile(); 
+
+?>
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
           <ul class="nav">
             <li class="nav-item nav-item2">
@@ -8,7 +10,8 @@
               </a>
             </li>
             <li class="nav-item nav-item2">
-              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+              <a class="nav-link  ?> " data-toggle="collapse" href="#ui-basic" 
+                aria-expanded="" aria-controls="ui-basic">
                 <span class="menu-title">مدیریت دسته ها</span><i class="mr-2 menu-arrow"></i>
                 <span class="icon-bg"><i class="mdi mdi-format-list-bulleted menu-icon"></i></span>
               </a>

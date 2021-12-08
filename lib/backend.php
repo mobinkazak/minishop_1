@@ -110,18 +110,77 @@ class Backend extends Base{
 			return -1;
 		}
 	}
-	public function getParentCategoryList($parent_id=0){
-		$parent_id=$this->toInt($parent_id);
-		$q="SELECT * FROM categories WHERE parent_id='$parent_id'";
-		return $this->query($q);
-	}
-	public function getParentTitle($id){
+
+	public function updateCategory($id){
 		$id=$this->toInt($id);
-		$q="SELECT * FROM categories WHERE id='$id'";
-		$res=$this->query($q);
-		$row=$this->getRow($res);
-		$this->freeResult($res);
-		return $row;
+		$parent_id=$this->toInt($this->post('parent_id'));
+		$title=$this->safeString($this->post('title'));
+		$currentCat=$this->getCategoryTitle($id);
+		if ($currentCat['parent_id']==0) {
+
+			if ($currentCat['title']!= $title) {
+				if ($this->checkCategory($title,0)==0) {
+					$q="UPDATE categories SET title='$title' WHERE id='$id'";
+					return $this->query($q);
+				}else
+					return -1;
+			}
+
+			return 1;
+		}else{
+			$q = "UPDATE categories SET ";
+			$isChangeParentId=false;
+			$isChangeTitle=false;
+            
+			if ($currentCat['title']!=$title) {
+				if ($this->checkCategory($title, $parent_id)==0) {
+					$q.=" title='$title' ";
+					$isChangeTitle=true;
+				}else{
+					return -1;
+				}
+			}
+
+			if ($currentCat['parent_id']!=$parent_id) {
+				if ($this->checkCategory($title, $parent_id)==0) {
+					if ($isChangeTitle) {
+						$q.=" , ";
+					}
+					$q.=" parent_id='$parent_id' ";
+					$isChangeParentId=true;
+
+				}else{
+					return -1;
+				}
+			}
+
+            $q.=" WHERE id='$id' ";
+            if ($isChangeParentId || $isChangeTitle)
+            	$this->query($q);
+
+            return 1;
+
+		}
+	}
+
+	public function getCountChildForCategory($parent_id){
+		$parent_id=$this->toInt($parent_id);
+		$q="SELECT COUNT(*) AS n FROM categories WHERE parent_id='$parent_id'";
+		$r=$this->query($q);
+		$row=$this->getRow($r);
+		return $row['n'];
+	}
+	public function deleteCategory($id){
+		$id=$this->toInt($id);
+		if ($this->getCountChildForCategory($id)==0) {
+			$q="DELETE FROM categories WHERE id='$id' ";
+			return $this->query($q);
+		}else{
+			return 0;
+		}
 
 	}
+
+	
+	
 }

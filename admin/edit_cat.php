@@ -1,12 +1,21 @@
 <?php require_once '../loader.php'; 
+  
+  $title=$backend->safeString($backend->get('title'));
+  if ($backend->get('parent_id')=='') {
+      $parent_id=-1;
+   }else{
+      $parent_id=$backend->toInt($backend->get('parent_id'));
+   }
+  $url="?title=$title&parent_id=$parent_id&p=$backend->page";
+  $rowId=$backend->toInt($backend->get('rowId'));
+  $titleRow=$backend->getCategoryTitle($rowId);
 
-  if ($backend->post('btn_add')) {
-    $result=$backend->addCategory();
+  if ($backend->post('btn_save')) {
+    $result=$backend->updateCategory($rowId);
     if ($result > 0) {
-      $pId=$backend->toInt($backend->post('parent_id'));
-      $backend->redirect('?e=0&pid='.$pId);
+      $backend->redirect($url.'&e=0&rowId='.$rowId);
     }else{
-      $backend->redirect('?e=1&pid='.$pId);
+      $backend->redirect($url.'&e=1&rowId='.$rowId);
     }
   }
 ?>
@@ -16,7 +25,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>ثبت دسته جدید</title>
+    <title>درحال ویرایش <?php print $titleRow['title'] ?></title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="assets/vendors/flag-icon-css/css/flag-icon.min.css">
@@ -55,7 +64,7 @@
                 <div class="card">
                   <div class="card-body">
                     <?php 
-                    $backend->setAlert('e','0','success','دسته جدید با موفقیت ثبت شد');
+                    $backend->setAlert('e','0','success','ویرایش با موفقیت انجام شد');
                     $backend->setAlert('e','1','danger','عنوان وارد شده قبلا ثبت شده است');
                     
                     ?>
@@ -63,17 +72,25 @@
                     <form class="forms-sample" method="post" action="" autocomplete="off">
                       <div class="form-group">
                         <label for="title">عنوان دسته</label>
-                        <input type="text" class="form-control" name="title" id="title">
+                        <input type="text" class="form-control" name="title" id="title" value="<?php print $titleRow['title'] ?>">
                       </div>
                         
                       <div class="form-group">
                         <label for="parent_id">انتخاب دسته بندی</label>
-                        <select class="form-control" name="parent_id" id="parent_id">
-                          <option value="0">دسته اصلی</option>
+                        <select <?php ($titleRow['parent_id']==0)? print 'disabled':print ''; ?> class="form-control" name="parent_id" id="parent_id">
+                          <?php 
+                          if ($titleRow['parent_id']==0) {
+                            ?>
+                          <option <?php ($titleRow['parent_id']==0)?print 'selected':print ''; ?> >دسته اصلی</option>
+
+                            <?php
+                          }
+                          ?>
+
                           <?php 
                           $res=$backend->getParentCategoryList();
                           while ($parentRow=$backend->getRow($res)) {
-                            $sel=($parentRow['id']==$backend->get('pid'))?'selected':'';
+                            $sel=($parentRow['id']==$titleRow['parent_id'])?'selected':'';
                             ?>
                             <option disabled></option>
                             <option <?php print $sel; ?> class="text-center" style="background-color: #666;color:#fff;" value="<?php print $parentRow['id'] ?>"><?php print $parentRow['title']; ?></option>
@@ -86,21 +103,21 @@
                             <option value="<?php print $parentRow2['id'] ?>">----<?php print $parentRow2['title']; ?></option>
 
                               <?php 
-                              $res3=$backend->getParentCategoryList($parentRow2['id']);
-                              while ($parentRow3=$backend->getRow($res3)) {
+                              //$res3=$backend->getParentCategoryList($parentRow2['id']);
+                              //while ($parentRow3=$backend->getRow($res3)) {
                               ?>
-                              <option value="<?php print $parentRow3['id'] ?>">--------<?php print $parentRow3['title']; ?></option>
+                              <!--<option value="<?php //print $parentRow3['id'] ?>">--------<?php //print $parentRow3['title']; ?></option> -->
 
                               <?php
-                              }
+                              //}
                             }
                           }
                           ?>
 
                         </select>
                       </div>
-                      <button type="submit" name="btn_add" class="btn btn-primary mr-2" value="1">ثبت</button>
-                      <a href="<?php print ADMIN_URL ?>index.php" class="btn btn-light">لغو</a>
+                      <button type="submit" name="btn_save" class="btn btn-warning mr-2" value="1">ویرایش</button>
+                      <a href="<?php print ADMIN_URL ?>list_cat.php<?php print $url; ?>" class="btn btn-light">لغو</a>
                     </form>
                   </div>
                 </div>
