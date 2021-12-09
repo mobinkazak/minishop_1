@@ -319,12 +319,12 @@ abstract class Base{
 	}
 	public function getParentCategoryList($parent_id=0,$order=''){
 		if (!empty($order)) {
-			$order2=" ORDER BY $order ASC";
+			$order=" ORDER BY $order ASC";
 		}else{
 			$order='';
 		}
 		$parent_id=$this->toInt($parent_id);
-		$q="SELECT * FROM categories WHERE parent_id='$parent_id' $order2 ";
+		$q="SELECT * FROM categories WHERE parent_id='$parent_id' $order ";
 		return $this->query($q);
 	}
 

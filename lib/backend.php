@@ -103,11 +103,15 @@ class Backend extends Base{
 	public function addCategory(){
 		$parent_id=$this->toInt($this->post('parent_id'));
 		$title=$this->safeString($this->post('title'));
-		if ($this->checkCategory($title,$parent_id)==0) {
-			$q="INSERT INTO categories VALUES('NULL','$title','$parent_id')";
-			return $this->query($q);
+		if (!empty($parent_id) || !empty($title)) {
+			if ($this->checkCategory($title,$parent_id)==0) {
+				$q="INSERT INTO categories VALUES('NULL','$title','$parent_id')";
+				return $this->query($q);
+			}else{
+				return -1;
+			}
 		}else{
-			return -1;
+			return -2;
 		}
 	}
 
@@ -180,7 +184,19 @@ class Backend extends Base{
 		}
 
 	}
-
+	public function addProdStep1(){
+		$title_fa=$this->safeString($this->post('title_fa'));
+		$title_en=$this->safeString($this->post('title_en'));
+		$short_desc=$this->safeString($this->post('short_desc'));
+		$long_desc=$this->safeString($this->post('long_desc'));
+		$status=$this->toInt($this->post('status'));
+		if (!empty($title_fa) || !empty($title_en) || !empty($short_desc) || !empty($long_desc) || !empty($status)) {
+			$q="INSERT INTO products (title_fa,title_en,short_desc,long_desc,status) VALUES ('$title_fa','$title_en','$short_desc','$long_desc','$status')";
+			return $this->query($q);
+		}else{
+			return -1;
+		}
+	}
 	
 	
 }

@@ -279,3 +279,10 @@ span.menu-title{
 .page-link{
   line-height: 2.6 !important;
 }
+.select2{
+  width: 100% !important;
+
+}
+.select2-container--default .select2-selection--single, .select2-container--default .select2-selection--single .select2-search__field, .typeahead, .tt-query, .tt-hint{
+  padding: 0 !important;
+}

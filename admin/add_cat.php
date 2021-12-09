@@ -6,7 +6,7 @@
       $pId=$backend->toInt($backend->post('parent_id'));
       $backend->redirect('?e=0&pid='.$pId);
     }else{
-      $backend->redirect('?e=1&pid='.$pId);
+      $backend->redirect("?e=$result&pid=$pId");
     }
   }
 ?>
@@ -56,7 +56,8 @@
                   <div class="card-body">
                     <?php 
                     $backend->setAlert('e','0','success','دسته جدید با موفقیت ثبت شد');
-                    $backend->setAlert('e','1','danger','عنوان وارد شده قبلا ثبت شده است');
+                    $backend->setAlert('e','-1','danger','عنوان وارد شده قبلا ثبت شده است');
+                    $backend->setAlert('e','-2','danger','برای ثبت دسته جدید فیلدهای زیر را پر کنید');
                     
                     ?>
                     <h4 class="card-title">ثبت دسته جدید</h4>

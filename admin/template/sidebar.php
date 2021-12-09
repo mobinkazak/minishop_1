@@ -10,18 +10,31 @@
               </a>
             </li>
             <li class="nav-item nav-item2">
-              <a class="nav-link  ?> " data-toggle="collapse" href="#ui-basic" 
-                aria-expanded="" aria-controls="ui-basic">
+              <a class="nav-link" data-toggle="collapse" href="#cat_mng" aria-expanded="false">
                 <span class="menu-title">مدیریت دسته ها</span><i class="mr-2 menu-arrow"></i>
                 <span class="icon-bg"><i class="mdi mdi-format-list-bulleted menu-icon"></i></span>
               </a>
-              <div class="collapse" id="ui-basic">
+              <div class="collapse" id="cat_mng">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="<?php print ADMIN_URL; ?>add_cat.php">ثبت دسته جدید</a></li>
                   <li class="nav-item"> <a class="nav-link" href="<?php print ADMIN_URL; ?>list_cat.php">لیست دسته ها</a></li>
                 </ul>
               </div>
             </li>
+
+            <li class="nav-item nav-item2">
+              <a class="nav-link" data-toggle="collapse" href="#prod_mng" aria-expanded="false">
+                <span class="menu-title">مدیریت محصولات</span><i class="mr-2 menu-arrow"></i>
+                <span class="icon-bg"><i class="mdi mdi-chart-bar menu-icon"></i></span>
+              </a>
+              <div class="collapse" id="prod_mng">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="<?php print ADMIN_URL; ?>add_prod.php">ثبت محصول جدید</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="<?php print ADMIN_URL; ?>list_prod.php">لیست محصولات</a></li>
+                </ul>
+              </div>
+            </li>
+
             <li class="nav-item nav-item2">
               <a class="nav-link" href="pages/icons/mdi.html">
                 <span class="menu-title">Icons</span>
@@ -32,12 +45,6 @@
               <a class="nav-link" href="pages/forms/basic_elements.html">
                 <span class="menu-title">Forms</span>
                 <span class="icon-bg"><i class="mdi mdi-format-list-bulleted menu-icon"></i></span>
-              </a>
-            </li>
-            <li class="nav-item nav-item2">
-              <a class="nav-link" href="pages/charts/chartjs.html">
-                <span class="menu-title">Charts</span>
-                <span class="icon-bg"><i class="mdi mdi-chart-bar menu-icon"></i></span>
               </a>
             </li>
             <li class="nav-item nav-item2">
