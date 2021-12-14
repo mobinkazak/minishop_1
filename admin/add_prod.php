@@ -4,14 +4,41 @@
   if ($backend->post('btn_add_step1')) {
     $result=$backend->addProdStep1();
     if ($result > 0) {
-      $backend->redirect('?step=2&e='.$result);
+      $backend->redirect('?step=2&e=0&index='.$result);
     }else{
-      $backend->redirect('?e='.$result);
+      $backend->redirect('?step=1&e='.$result);
     }
-
   }
-  $step=$backend->toInt($backend->get('step'));
 
+  $index=$backend->toInt($backend->get('index'));
+  if ($backend->post('btn_add_step2')) {
+    $res=$backend->updateProdStep2($index);
+    if ($res==0) {
+      $backend->redirect('?step=3&e=0&index='.$index);
+    }else{
+      $backend->redirect('?step=2&e='.$res.'&index='.$index);
+    }
+  }
+
+  if ($backend->post('btn_add_step3')) {
+    $res=$backend->updateProdStep3($index);
+    if ($res==0) {
+      $backend->redirect('?step=4&e=0&index='.$index);
+    }else{
+      $backend->redirect('?step=3&e='.$res.'&index='.$index);
+    }
+  }
+
+  if ($backend->post('btn_add_step4')) {
+    $res=$backend->updateProdStep4($index);
+    if ($res==0) {
+      $backend->redirect('?step=1&product=1');
+    }else{
+      $backend->redirect('?step=4&e='.$res.'&index='.$index);
+    }
+  }
+
+  $step=$backend->toInt($backend->get('step'));
   if ($step==2) {
     
     $tab1="disabled";
@@ -140,10 +167,37 @@
               </li>
             </ul>
             <div class="tab-content px-5" id="myTabContent">
-            <?php $backend->setAlert('e','-1','danger','برای رفتن به مرحله بعد لازم است فیلدهای زیر پر شوند'); ?>
+            <?php $backend->setAlert('e','-1','danger','برای رفتن به مرحله بعد لازم است فیلدهای زیر پر باشد'); ?>
+            <?php $backend->setAlert('e','-2','danger','عنوان محصول وارد شده وجود دارد'); ?>
+            <?php $backend->setAlert('e','-3','danger','برای رفتن به مرحله بعد لازم است فیلدهای زیر پر باشد'); ?>
+            <?php $backend->setAlert('e','-4','danger','لطفا تصاویر محصول خود را انتخاب کنید'); ?>
+            <?php $backend->setAlert('e','-5','danger','برای اتمام مراحل ثبت محصول فیلدهای زیر را هم پر کنید'); ?>
+            <?php $backend->setAlert('product','1','success','محصول جدید شما با موفقیت ثبت شد'); ?>
 
               <div class="tab-pane fade <?php print $activeTab1; ?> <?php print $showTab1; ?>" id="step1" role="tabpanel">
                 <form class="form_1" method="post" action="" autocomplete="off">
+                  <div class="form-group">
+                    <label for="cat_id">دسته محصول</label><span class="star"></span>
+                    <select class="form-control" dir="rtl" name="cat_id" id="cat_id">
+                      <option value="0">دسته بندی مورد نظر خود را انتخاب کنید</option>
+                      <?php
+                      
+                      $res=$backend->getParentCategoryList();
+                      while ($parentRow=$backend->getRow($res)) {
+                      ?>
+                      <option value="<?php print $parentRow['id'] ?>"><?php print $parentRow['title']; ?></option>
+                      <?php
+                      }
+                      ?>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="sub_cat_id">زیردسته محصول</label><span class="star"></span>
+                    <select class="form-control" dir="rtl" name="sub_cat_id" id="sub_cat_id">
+                      <option value="0">--------</option>
+                      
+                    </select>
+                  </div>
                   <div class="form-group">
                     <label for="title_fa">عنوان محصول (فارسی)</label><span class="star"></span>
                     <input type="text" class="form-control" name="title_fa" id="title_fa">
@@ -160,7 +214,7 @@
                     <label for="long_desc">توضیحات کامل</label><span class="star"></span>
                     <textarea style="height:150px;" class="form-control" name="long_desc" id="long_desc"></textarea>
                   </div>
-                  <div class="form-group mb-4">
+                  <div class="form-group">
                     <label>وضعیت محصول : </label><span class="star"></span>
                     <span class="mr-4">
                       <span class="">
@@ -173,6 +227,12 @@
                       </span>
                     </span>
                   </div>
+                  <div class="form-check form-check-inline">
+                    <label class="form-check-label" for="is_special">محصول ویژه : </label>
+                    <input class="form-check-input" type="checkbox" name="is_special" id="is_special" value="1">
+                  </div>
+                  <div class="clearfix mb-1"></div>
+
                   <button type="submit" name="btn_add_step1" class="btn btn-info mr-2" value="1">مرحله بعد</button>
                   <a href="<?php print ADMIN_URL ?>index.php" class="btn btn-light">لغو</a>
                 </form>
@@ -194,28 +254,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="form-group">
-                    <label for="cat_id">دسته محصول</label>
-                    <select class="form-control" dir="rtl" name="cat_id" id="cat_id">
-                      <option value="">دسته بندی مورد نظر خود را انتخاب کنید</option>
-                      <?php
-                      
-                      $res=$backend->getParentCategoryList();
-                      while ($parentRow=$backend->getRow($res)) {
-                      ?>
-                      <option value="<?php print $parentRow['id'] ?>"><?php print $parentRow['title']; ?></option>
-                      <?php
-                      }
-                      ?>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="sub_cat_id">زیردسته محصول</label>
-                    <select class="form-control" dir="rtl" name="sub_cat_id" id="sub_cat_id">
-                      <option value="0">--------</option>
-                      
-                    </select>
-                  </div>
+                  
                   <div class="row">
                     <div class="col-md-6 col-sm-12">
                       <div class="form-group">
@@ -235,7 +274,7 @@
                     <input type="text" dir="ltr" class="form-control" name="quantity" id="quantity">
                   </div>
                   
-                  <button type="submit" name="btn_add" class="btn btn-info mr-2" value="1">مرحله بعد</button>
+                  <button type="submit" name="btn_add_step2" class="btn btn-info mr-2" value="1">مرحله بعد</button>
                   <a href="<?php print ADMIN_URL ?>index.php" class="btn btn-light">لغو</a>
                 </form>
               </div>
@@ -244,7 +283,7 @@
                 <form class="form_3" method="post" action="" autocomplete="off">
                   <div class="form-group">
                     <label for="thumb_img">تصویر محصول</label><span class="star"></span>
-                    <input type="text" dir="ltr" class="form-control" name="thumb_img" id="thumb_img">
+                    <input type="text" placeholder="برای انتخاب تصویر لطفا کلیک نمایید" class="form-control imgUploader" name="thumb_img" id="thumb_img">
                   </div>
 
                   <table class="table table-bordered" id="tbl-list">
@@ -254,8 +293,8 @@
                       <th class="text-center">عملیات</th>
                     </tr>
                     <tr class="text-center">
-                      <td><input type="text" dir="ltr" class="form-control"></td>
-                      <td><input type="text" dir="ltr" class="form-control"></td>
+                      <td><input type="text" dir="rtl" name="img[]" placeholder="برای انتخاب تصویر لطفا کلیک نمایید" class="form-control imgUploader"></td>
+                      <td><input type="text" dir="ltr" name="alt[]" class="form-control"></td>
                       <td>
                         <button type="button" class="btn btn-success" id="btn-add-row">
                           <span class="mdi mdi-plus"></span>
@@ -267,7 +306,7 @@
                     </tr>
                   </table>
                   
-                  <button type="submit" name="btn_add" class="btn btn-info mr-2" value="1">مرحله بعد</button>
+                  <button type="submit" name="btn_add_step3" class="btn btn-info mr-2" value="1">مرحله بعد</button>
                   <a href="<?php print ADMIN_URL ?>index.php" class="btn btn-light">لغو</a>
                 </form>
               </div>
@@ -276,14 +315,14 @@
               <div class="tab-pane fade <?php print $activeTab4; ?> <?php print $showTab4; ?>" id="step4" role="tabpanel">
                 <form class="form_4" method="post" action="" autocomplete="off">
                   <div class="form-group">
-                    <label for="short_desc">کلمات کلیدی (سئو)</label><span class="star"></span>
-                    <textarea style="resize:none;height:100px;" class="form-control" name="short_desc" id="short_desc"></textarea>
+                    <label for="meta_key">کلمات کلیدی (سئو)</label><span class="star"></span>
+                    <textarea style="resize:none;height:100px;" class="form-control" name="meta_key" id="meta_key"></textarea>
                   </div>
                   <div class="form-group">
-                    <label for="long_desc">توضیحات (سئو)</label><span class="star"></span>
-                    <textarea style="height:150px;" class="form-control" name="long_desc" id="long_desc"></textarea>
+                    <label for="meta_desc">توضیحات (سئو)</label><span class="star"></span>
+                    <textarea class="form-control" name="meta_desc" id="meta_desc"></textarea>
                   </div>
-                  <button type="submit" name="btn_add" class="btn btn-info mr-2" value="1">مرحله بعد</button>
+                  <button type="submit" name="btn_add_step4" class="btn btn-success mr-2" value="1">پایان</button>
                   <a href="<?php print ADMIN_URL ?>index.php" class="btn btn-light">لغو</a>
                 </form>
               </div>
@@ -318,13 +357,17 @@
     <script src="js/jquery-3.6.0.min.js"></script>
     <script src="js/select2.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="tinymce/tinymce.min.js"></script>
     <script type="text/javascript">
     $(document).ready(function() {
+      initEditor('#long_desc');
+
       $('#cat_id').select2();
       $('#sub_cat_id').select2();
       $('#cat_id').change(function() {
         var id=parseInt($(this).val());
         if(id>0){
+          $('#sub_cat_id option:gt(0)').remove();
           $.post('ajax.php', {'task': 'getSubCat','id':id}, function(data) {
           $('#sub_cat_id').html(data);
           });

@@ -286,3 +286,8 @@ span.menu-title{
 .select2-container--default .select2-selection--single, .select2-container--default .select2-selection--single .select2-search__field, .typeahead, .tt-query, .tt-hint{
   padding: 0 !important;
 }
+
+#thumb_img{
+  cursor: pointer;
+}
+

@@ -5,6 +5,7 @@ abstract class Base{
 	private $dbLink=null;
 	public $page=null;
 	public $limit=null;
+	private $sortCol=array();
 
 	public function __construct(){
 		$this->dbLink=mysqli_connect(DB_HOST,DB_USER,DB_PASS) or die(mysqli_connect_error());
@@ -56,6 +57,9 @@ abstract class Base{
 		}
 
 
+	}
+	public function setSortCol($column){
+		$this->sortCol=$column;
 	}
 	public function __destruct(){
 		if (is_resource($this->dbLink)) {
@@ -123,7 +127,7 @@ abstract class Base{
 		$dateArray=explode(' ',$date);
         $dateArr=explode('-',$dateArray[0]);
         $date=gregorian_to_jalali($dateArr[0],$dateArr[1],$dateArr[2]);
-        $date=implode('/',$date).' '.$dateArray[1];
+        $date=implode('-',$date).'<br>'.$dateArray[1];
         return $date;
 
 	}
@@ -182,6 +186,9 @@ abstract class Base{
 		$totalRows=$rowCount['c'];
 		$totalPage=ceil($totalRows / $m);
 		$n=($m*$this->page)-$m;
+		if (!in_array($_SESSION['field'],$this->sortCol)) {
+			$_SESSION['field']=$this->sortCol[0];
+		}
 		$order=" ORDER BY {$_SESSION['field']} {$_SESSION['sort']} ";
 		$q = "SELECT * FROM $table_name $where $order LIMIT $n,$m";
 		$r=$this->query($q);

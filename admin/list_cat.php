@@ -16,6 +16,7 @@
    if ($parent_id >= 0) {
       $where.=" AND parent_id='$parent_id' ";
    }
+   $backend->setSortCol(['id','title']);
    $resPagination=$backend->pagination('categories',$where);
 
    if ($backend->get('del_id')) {

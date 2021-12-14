@@ -103,7 +103,7 @@ class Backend extends Base{
 	public function addCategory(){
 		$parent_id=$this->toInt($this->post('parent_id'));
 		$title=$this->safeString($this->post('title'));
-		if (!empty($parent_id) || !empty($title)) {
+		if (!empty($parent_id) && !empty($title)) {
 			if ($this->checkCategory($title,$parent_id)==0) {
 				$q="INSERT INTO categories VALUES('NULL','$title','$parent_id')";
 				return $this->query($q);
@@ -184,19 +184,91 @@ class Backend extends Base{
 		}
 
 	}
+	public function checkProdTitle($cat_id,$sub_cat_id,$title_fa){
+		$title=$this->safeString($title);
+		$cat_id=$this->toInt($cat_id);
+		$sub_cat_id=$this->toInt($sub_cat_id);
+		$q="SELECT id FROM products WHERE title_fa='$title_fa' AND cat_id='$cat_id' AND sub_cat_id='$sub_cat_id'";
+		$r=$this->query($q);
+		return $r->num_rows;
+
+	}
 	public function addProdStep1(){
 		$title_fa=$this->safeString($this->post('title_fa'));
 		$title_en=$this->safeString($this->post('title_en'));
 		$short_desc=$this->safeString($this->post('short_desc'));
 		$long_desc=$this->safeString($this->post('long_desc'));
 		$status=$this->toInt($this->post('status'));
-		if (!empty($title_fa) || !empty($title_en) || !empty($short_desc) || !empty($long_desc) || !empty($status)) {
-			$q="INSERT INTO products (title_fa,title_en,short_desc,long_desc,status) VALUES ('$title_fa','$title_en','$short_desc','$long_desc','$status')";
-			return $this->query($q);
+		$cat_id=$this->toInt($this->post('cat_id'));
+		$sub_cat_id=$this->toInt($this->post('sub_cat_id'));
+		$date=date('Y-m-d H:i:s');
+		
+		if (!empty($title_fa) && !empty($title_en) && !empty($short_desc) && !empty($long_desc) && !empty($status) 
+			&& !empty($cat_id) && !empty($sub_cat_id) ) {
+			if ($this->checkProdTitle($cat_id, $sub_cat_id, $title_fa)==0) {
+				$q="INSERT INTO products (title_fa,title_en,short_desc,long_desc,status,cat_id,sub_cat_id,created_date) VALUES ('$title_fa','$title_en','$short_desc','$long_desc','$status','$cat_id','$sub_cat_id',$date)";
+				return $this->query($q);
+			}else{
+				return -2;
+			}
 		}else{
 			return -1;
 		}
 	}
+	public function updateProdStep2($id){
+		$model=$this->safeString($this->post('model'));
+		$code=$this->safeString($this->post('code'));
+		$price=$this->safeString($this->post('price'));
+		$discount=$this->safeString($this->post('discount'));
+		$quantity=$this->toInt($this->post('quantity'));
+		$id=$this->toInt($id);
+		$date=date('Y-m-d H:i:s');
+
+		if ($model!='' && $code!='' && $price!='' && $discount!='' && $quantity!=0) {
+			$q="UPDATE products SET model='$model',code='$code',price='$price',discount='$discount',quantity='$quantity',edited_date='$date' WHERE id='$id'";
+			$this->query($q);
+		}else{
+			return -3;
+		}
+	}
 	
+	public function updateProdStep3($id){
+		$thumb=$this->safeString($this->post('thumb_img'));
+		$id=$this->toInt($id);
+		$img=$_POST['img'];
+		$i=0;
+		$date=date('Y-m-d H:i:s');
+
+
+		if ($thumb!='' && $img!='') {
+			$q="UPDATE products SET thumb_img='$thumb',edited_date='$date' WHERE id='$id'";
+			$this->query($q);
+			foreach ($img as $image) {
+				$alt=$_POST['alt'][$i];
+				$image=$this->safeString(trim($image));
+				$alt=$this->safeString(trim($alt));
+				$q2="INSERT INTO product_image VALUES(NULL,'$id','$image','$alt')";
+				$this->query($q2);
+				$i++;
+			}
+
+		}else{
+			return -4;
+		}
+	}
+
+	public function updateProdStep4($id){
+		$id=$this->toInt($id);
+		$meta_key=$this->safeString($this->post('meta_key'));
+		$meta_desc=$this->safeString($this->post('meta_desc'));
+		$date=date('Y-m-d H:i:s');
+
+		if ($meta_key!='' && $meta_desc!='') {
+			$q="UPDATE products SET meta_keywords='$meta_key',meta_desc='$meta_desc',edited_date='$date' WHERE id='$id'";
+			$this->query($q);
+		}else{
+			return -5;
+		}
+	}
 	
 }
