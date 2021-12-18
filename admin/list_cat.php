@@ -20,9 +20,10 @@
    $resPagination=$backend->pagination('categories',$where);
 
    if ($backend->get('del_id')) {
-      $resDel=$backend->deleteCategory($backend->get('del_id'));
+      $resDel=$backend->deleteCategory($backend->get('del_id'),$backend->get('cid'),$backend->get('sid'));
       $backend->redirect("$url&p=$backend->page&d=$resDel");
    }
+
 
 
 ?>
@@ -74,7 +75,7 @@
 
             <div class="modal-footer">
                <div id="delete-notice" class="d-none text-danger flex-grow-1">
-                 <p>بدلیل دارا بودن فرزند قابل حذف نمی باشد</p>
+                 <p></p>
                </div>
               <button type="button" class="btn btn-secondary" data-dismiss="modal">لغو</button>
               <button id="delete-btn" type="button" class="btn btn-danger">حذف</button>
@@ -146,7 +147,8 @@
                            </div>
                            <div class="text-center">
                            <?php $backend->setAlert('d','1','success','رکورد مورد نظر با موفقیت حذف شد'); ?>
-                           <?php $backend->setAlert('d','0','danger','بدلیل دارا بودن فرزند قابل حذف نمی باشد'); ?>
+                           <?php $backend->setAlert('d','-1','danger','بدلیل دارا بودن فرزند قابل حذف نمی باشد'); ?>
+                           <?php $backend->setAlert('d','-2','danger','بدلیل دارا بودن محصول قابل حذف نمی باشد'); ?>
                            </div>
                            <?php $backend->showLimitTable($url); 
 
@@ -174,16 +176,26 @@
                                  <?php
                                     $idList=$backend->renderId($resPagination['totalRows']);
                                  while ($row=$backend->getRow($resPagination['result'])) {
-                                    $parent=$backend->getCategoryTitle($row['parent_id']);
                                  ?>
                                  <tr>
                                     <td  class="text-center"> <?php print $idList; ?> </td>
                                     <td><?php print $row['title'] ?></td>
                                     <td>
-                                       <?php ($row['parent_id']==0)?print 'دسته اصلی':print $parent['title']; ?>
+                                       <?php
+                                       if($row['parent_id']==0){
+                                          print 'دسته اصلی';
+                                          $cat_id=$row['id'];
+                                          $sub_cat_id=0;
+                                       }else{
+                                          $parent=$backend->getCategoryTitle($row['parent_id']);
+                                          print $parent['title'];
+                                          $cat_id=$row['parent_id'];
+                                          $sub_cat_id=$row['id'];
+                                       } 
+                                       ?>
                                     </td>
                                     <td><a href="<?php print ADMIN_URL ?>edit_cat.php<?php print $url; ?>&rowId=<?php print $row['id']; ?>&p=<?php print $backend->page; ?>" class="btn btn-warning">ویرایش</a></td>
-                                    <td><button data-id="<?php print $row['id']; ?>" data-child="<?php print $backend->getCountChildForCategory($row['id']); ?>" data-idlist="<?php print $idList; ?>" data-title="<?php print $row['title']; ?>" data-toggle="modal" data-target="#deleteModal" type="button" class="btn btn-danger">حذف</button></td>
+                                    <td><button data-cat-id="<?php print $cat_id; ?>" data-sub-cat-id="<?php print $sub_cat_id; ?>" data-prod-count="<?php print $backend->getCountProd($cat_id,$sub_cat_id); ?>" data-id="<?php print $row['id']; ?>" data-child="<?php print $backend->getCountChildForCategory($row['id']); ?>" data-idlist="<?php print $idList; ?>" data-title="<?php print $row['title']; ?>" data-toggle="modal" data-target="#deleteModal" type="button" class="btn btn-danger">حذف</button></td>
                                  </tr>
                                  <?php
                                  ($_SESSION['sort']=='asc')?$idList++:$idList--;
@@ -233,15 +245,26 @@
             var title=button.data('title');
             var idlist=button.data('idlist');
             var child=button.data('child');
+            var cid=button.data('cat-id');
+            var sid=button.data('sub-cat-id');
+            var prod_count=button.data('prod-count');
             var id=button.data('id');
             $(this).find('#delete-title').html(title);
             $(this).find('#delete-id').html(idlist);
             $(this).find('#delete-btn').attr('data-del-id',id);
+            $(this).find('#delete-btn').attr('data-cid',cid);
+            $(this).find('#delete-btn').attr('data-sid',sid);
             if(child!=0){
-               $(this).find('#delete-notice').removeClass('d-none').addClass('d-flex');
+               $(this).find('#delete-notice').html('بدلیل دارا بودن فرزند قابل حذف نمی باشد').removeClass('d-none').addClass('d-flex');
                $(this).find('#delete-btn').attr('disabled','disabled');
 
-            }else{
+            }
+            else if(prod_count !=0){
+               $(this).find('#delete-notice').html('بدلیل دارا بودن محصول قابل حذف نمی باشد').removeClass('d-none').addClass('d-flex');
+               $(this).find('#delete-btn').attr('disabled','disabled');
+            }
+
+            else{
                $(this).find('#delete-notice').removeClass('d-flex').addClass('d-none');
                $(this).find('#delete-btn').removeAttr('disabled');
             }
@@ -249,7 +272,9 @@
 
          $('#delete-btn').click(function() {
             var id=$(this).attr('data-del-id');
-            redirect('<?php print "$url&p=$backend->page&del_id=" ?>'+id);
+            var cid=$(this).attr('data-cid');
+            var sid=$(this).attr('data-sid');
+            redirect('<?php print "$url&p=$backend->page&del_id=" ?>'+id+'&cid='+cid+'&sid='+sid);
          });
 
 

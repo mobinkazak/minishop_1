@@ -229,7 +229,7 @@
                   </div>
                   <div class="form-check form-check-inline">
                     <label class="form-check-label" for="is_special">محصول ویژه : </label>
-                    <input class="form-check-input" type="checkbox" name="is_special" id="is_special" value="1">
+                    <input class="form-check-input" type="checkbox" name="is_special" id="is_special">
                   </div>
                   <div class="clearfix mb-1"></div>
 

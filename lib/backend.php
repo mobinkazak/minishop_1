@@ -174,13 +174,20 @@ class Backend extends Base{
 		$row=$this->getRow($r);
 		return $row['n'];
 	}
-	public function deleteCategory($id){
+	public function deleteCategory($id,$cat_id,$sub_cat_id){
 		$id=$this->toInt($id);
-		if ($this->getCountChildForCategory($id)==0) {
+		$cat_id=$this->toInt($cat_id);
+		$sub_cat_id=$this->toInt($sub_cat_id);
+
+		if ($this->getCountChildForCategory($id)==0 && $this->getCountProd($cat_id, $sub_cat_id)==0) {
 			$q="DELETE FROM categories WHERE id='$id' ";
 			return $this->query($q);
 		}else{
-			return 0;
+			if ($this->getCountChildForCategory($id)>0 ) {
+				return -1;
+			}else if($this->getCountProd($cat_id, $sub_cat_id)>0){
+				return -2;
+			}
 		}
 
 	}
@@ -202,11 +209,12 @@ class Backend extends Base{
 		$cat_id=$this->toInt($this->post('cat_id'));
 		$sub_cat_id=$this->toInt($this->post('sub_cat_id'));
 		$date=date('Y-m-d H:i:s');
+		$is_special=isset($_POST['is_special'])?1:0;
 		
 		if (!empty($title_fa) && !empty($title_en) && !empty($short_desc) && !empty($long_desc) && !empty($status) 
 			&& !empty($cat_id) && !empty($sub_cat_id) ) {
 			if ($this->checkProdTitle($cat_id, $sub_cat_id, $title_fa)==0) {
-				$q="INSERT INTO products (title_fa,title_en,short_desc,long_desc,status,cat_id,sub_cat_id,created_date) VALUES ('$title_fa','$title_en','$short_desc','$long_desc','$status','$cat_id','$sub_cat_id',$date)";
+				$q="INSERT INTO products (title_fa,title_en,short_desc,long_desc,status,cat_id,sub_cat_id,created_date,is_special) VALUES ('$title_fa','$title_en','$short_desc','$long_desc','$status','$cat_id','$sub_cat_id','$date','$is_special')";
 				return $this->query($q);
 			}else{
 				return -2;
@@ -269,6 +277,33 @@ class Backend extends Base{
 		}else{
 			return -5;
 		}
+	}
+	public function getCountProd($cat_id,$sub_cat_id=0){
+		$cat_id=$this->toInt($cat_id);
+		$sub_cat_id=$this->toInt($sub_cat_id);
+		$q="SELECT COUNT(*) as n FROM products WHERE cat_id='$cat_id' ";
+		if ($sub_cat_id>0) {
+			$q.=" AND sub_cat_id='$sub_cat_id'";
+		}
+		$res=$this->query($q);
+		$row=$this->getRow($res);
+		return $row['n'];
+	}
+	public function changeStatusProd($id,$val){
+		$date=date('Y-m-d H:i:s');
+		$id=$this->toInt($id);
+		$val=$this->toInt($val);
+		$q="UPDATE products SET status='$val',edited_date='$date' WHERE id='$id'";
+		return $this->query($q);
+
+	}
+	public function changeSpecialProd($id,$val){
+		$date=date('Y-m-d H:i:s');
+		$id=$this->toInt($id);
+		$val=$this->toInt($val);
+		$q="UPDATE products SET is_special='$val',edited_date='$date' WHERE id='$id'";
+		return $this->query($q);
+
 	}
 	
 }

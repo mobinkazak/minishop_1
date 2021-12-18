@@ -106,7 +106,7 @@
 
 	<!-- Recent items Starts -->
 	<section id="recent-product">
-		<?php require_once 'template/recom_items.php' ?>
+		<?php require_once 'template/special_items.php' ?>
 	</section>
 
 	<!-- Recent items Ends -->

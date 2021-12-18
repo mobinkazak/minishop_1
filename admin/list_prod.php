@@ -22,8 +22,12 @@ if ($backend->get('sub_cat_id')=='')
 else
    $sub_cat_id=$backend->toInt($backend->get('sub_cat_id'));
 
+if ($backend->get('special')=='')
+   $is_special=-1;
+else
+   $is_special=$backend->toInt($backend->get('special'));
 
-$url="?title_fa=$title_fa&title_en=$title_en&model=$model&price=$price&code=$code&discount=$discount&cat_id=$cat_id&sub_cat_id=$sub_cat_id&status=$status";
+$url="?title_fa=$title_fa&title_en=$title_en&model=$model&price=$price&code=$code&discount=$discount&cat_id=$cat_id&sub_cat_id=$sub_cat_id&status=$status&special=$is_special";
 $where='';
 if (!empty($title_fa))
    $where.=" AND title_fa LIKE '%$title_fa%' ";
@@ -52,13 +56,24 @@ if ($sub_cat_id > 0)
 if ($status >= 0)
    $where.=" AND status='$status' ";
 
+if ($is_special >= 0)
+   $where.=" AND is_special='$is_special' ";
 
-$backend->setSortCol(['id','title_fa','title_en','cat_id','sub_cat_id','model','code','price','discount','status','cr_dt','ed_dt']);
-$resPagination=$backend->pagination('products',$where);
-if ($backend->get('del_id')) {
-$resDel=$backend->deleteCategory($backend->get('del_id'));
-$backend->redirect("$url&p=$backend->page&d=$resDel");
-}
+
+   $backend->setSortCol(['id','title_fa','title_en','cat_id','sub_cat_id','model','code','price','discount','status','is_special']);
+   $resPagination=$backend->pagination('products',$where);
+   if ($backend->get('del_id')) {
+   $resDel=$backend->deleteCategory($backend->get('del_id'));
+   $backend->redirect("$url&p=$backend->page&d=$resDel");
+   }
+   if ($backend->get('st_id')!=''&& $backend->get('val')!='') {
+   $res=$backend->changeStatusProd($backend->get('st_id'),$backend->get('val'));
+   $backend->redirect("$url&p=$backend->page&st=$res");
+   }
+   if ($backend->get('sp_id')!=''&& $backend->get('val')!='') {
+   $res=$backend->changeSpecialProd($backend->get('sp_id'),$backend->get('val'));
+   $backend->redirect("$url&p=$backend->page&sp=$res");
+   }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -178,10 +193,15 @@ $backend->redirect("$url&p=$backend->page&d=$resDel");
                                              }
                                              ?>
                                           </select>
-                                          <select name="status" id="status" style="font-size:14px;border:1px solid #ddd;width:255px;">
-                                             <option value="-1" <?php ($status==-1)?print 'selected':print ''; ?> >وضعیت محصول را انتخاب کنید</option>
+                                          <select name="status" id="status" style="font-size:14px;border:1px solid #ddd;width:128px;">
+                                             <option value="-1" <?php ($status==-1)?print 'selected':print ''; ?> >وضعیت محصول</option>
                                              <option value="1" <?php ($status==1)?print 'selected':print ''; ?> >فعال</option>
                                              <option value="0" <?php ($status==0)?print 'selected':print ''; ?> >غیر فعال</option>
+                                          </select>
+                                          <select name="special" id="is_special" style="font-size:14px;border:1px solid #ddd;width:127px;">
+                                             <option value="-1" <?php ($is_special==-1)?print 'selected':print ''; ?> >محصولات ویژه</option>
+                                             <option value="1" <?php ($is_special==1)?print 'selected':print ''; ?> >بله</option>
+                                             <option value="0" <?php ($is_special==0)?print 'selected':print ''; ?> >خیر</option>
                                           </select>
                                           <button data-toggle="tooltip" title="جستجو" type="submit" class="btn btn-success px-3"> جستجو <i style="font-size:15px" class="mdi mdi-magnify"></i></button>
                                           <button type="button" onclick="redirect('?');" data-toggle="tooltip" title="پاک کن" class="btn btn-info px-3">پاک کن <i style="font-size:15px" class="mdi mdi-auto-fix"></i></button>
@@ -192,6 +212,7 @@ $backend->redirect("$url&p=$backend->page&d=$resDel");
                            </div>
                            <div class="text-center">
                               <?php $backend->setAlert('d','1','success','رکورد مورد نظر با موفقیت حذف شد'); ?>
+                              <?php $backend->setAlert('st','1','success','وضعیت با موفقیت تغییر یافت'); ?>
                               <?php $backend->setAlert('d','0','danger','بدلیل دارا بودن فرزند قابل حذف نمی باشد'); ?>
                            </div>
                            <?php $backend->showLimitTable($url);
@@ -203,9 +224,10 @@ $backend->redirect("$url&p=$backend->page&d=$resDel");
                            <?php
                            }
                            ?>
-                           <table class="table table-bordered table-responsive-sm table-hover">
+                           <table class="table table-bordered table-responsive-sm table-hover table-responsive-md table-responsive-xl overflow-auto">
                               <thead>
                                  <tr>
+                                    <th width="1px"><input type="checkbox"></th>
                                     <th width="1px"><?php $backend->tableFieldSort($url,'#','id'); ?></th>
                                     <th><?php $backend->tableFieldSort($url,'عنوان(FA)','title_fa'); ?></th>
                                     <th><?php $backend->tableFieldSort($url,'عنوان(EN)','title_en'); ?></th>
@@ -214,11 +236,13 @@ $backend->redirect("$url&p=$backend->page&d=$resDel");
                                     <th><?php $backend->tableFieldSort($url,'مدل','model'); ?></th>
                                     <th><?php $backend->tableFieldSort($url,'کد','code'); ?></th>
                                     <th><?php $backend->tableFieldSort($url,'قیمت','price'); ?></th>
-                                    <!-- <th><?php //$backend->tableFieldSort($url,'تخفیف','discount'); ?></th> -->
-                                    <th><?php $backend->tableFieldSort($url,'وضعیت','status'); ?></th>
-                                    <th>تاریخ ثبت  </th>
-                                    <th>تاریخ ویرایش</th>
-                                    <th width="10px">عملیات</th>
+                                    <th>
+                                       <span class="pull-right">ثبت</span>
+                                       <span class="text-muted text-monospace mr-3">/</span>
+                                       <span class="pull-left">ویرایش</span>
+                                    </th>
+                                    <!-- <th></th> -->
+                                    <th width="1px">عملیات</th>
                                  </tr>
                               </thead>
                               <tbody>
@@ -229,7 +253,8 @@ $backend->redirect("$url&p=$backend->page&d=$resDel");
                                  $cat=$backend->getCategoryTitle($row['cat_id']);
                                  ?>
                                  <tr>
-                                    <td  class="text-center"> <?php print $idList; ?> </td>
+                                    <td><input type="checkbox"></td>
+                                    <td class="text-center"> <?php print $idList; ?> </td>
                                     <td><?php print $row['title_fa']; ?></td>
                                     <td><?php print $row['title_en']; ?></td>
                                     <td><?php print $cat['title']; ?></td>
@@ -238,27 +263,67 @@ $backend->redirect("$url&p=$backend->page&d=$resDel");
                                     <td><?php print $row['code']; ?></td>
                                     <td><?php print number_format($backend->toFloat($row['price'])); ?></td>
                                     <!-- <td><?php //print number_format($backend->toFloat($row['discount'])); ?></td> -->
-                                    <td><?php $row['status']==1 ? print '1':print '0'; ?></td>
-                                    <td>
-                                       <?php
+                                    
+                                    <td style="font-size:12px;">
+                                       <span class="pull-right">
+                                          <?php
                                        if ($row['created_date']!='0000-00-00 00:00:00') {
                                        print $backend->persianDate($row['created_date']);
                                        }else{
                                        print '-';
                                        }
                                        ?>
-                                    </td>
-                                    <td>
-                                       <?php
+                                       </span>
+                                       <span class="pull-left">
+                                          <?php
                                        if ($row['edited_date']!='0000-00-00 00:00:00') {
                                        print $backend->persianDate($row['edited_date']);
                                        }else{
                                        print '-';
                                        }
                                        ?>
+                                       </span>
                                     </td>
-                                    <td><a data-toggle="tooltip" title="ویرایش" href="<?php print ADMIN_URL ?>edit_cat.php<?php print $url; ?>&rowId=<?php print $row['id']; ?>&p=<?php print $backend->page; ?>" class="btn btn-warning"><i class="mdi mdi-pencil"></i></a>
-                                 <button data-toggle="tooltip" title="حذف" data-id="<?php print $row['id']; ?>" data-child="<?php print $backend->getCountChildForCategory($row['id']); ?>" data-idlist="<?php print $idList; ?>" data-title="<?php print $row['title_en']; ?>" data-toggle="modal" data-target="#deleteModal" type="button" class="btn btn-danger"><i class="mdi mdi-delete-empty"></i></button></td>
+                                    <!-- <td>
+                                       
+                                    </td> -->
+                                    <td>
+                                       <?php 
+                                       if ($row['is_special']==1) {
+                                          ?>
+                                          <button onclick="redirect('<?php print "$url&sp_id=$row[id]&val=0"; ?>')" data-toggle="tooltip" title="غیر ویژه کردن محصول" type="button" class="btn-sm btn-danger border-0">
+                                             <i class="mdi mdi-star-off"></i>
+                                          </button>
+                                          <?php
+                                       }else{
+                                          ?>
+                                          <button onclick="redirect('<?php print "$url&sp_id=$row[id]&val=1"; ?>')" data-toggle="tooltip" title="ویژه سازی محصول" type="button" class="btn-sm btn-info border-0">
+                                             <i class="mdi mdi-star"></i>
+                                          </button>
+                                          <?php
+                                       }
+                                       ?>
+
+                                       <?php 
+                                       if ($row['status']==1) {
+                                          ?>
+                                          <button onclick="change_status(<?php print $row['id'] ?>,0)" data-toggle="tooltip" title="غیر فعال کردن محصول" type="button" class="btn-sm btn-success border-0">
+                                             <i class="mdi mdi-eye-off"></i>
+                                          </button>
+                                          <?php
+                                       }else{
+                                          ?>
+                                          <button onclick="change_status(<?php print $row['id'] ?>,1)" data-toggle="tooltip" title="فعال کردن محصول" type="button" class="btn-sm btn-danger border-0">
+                                             <i class="mdi mdi-eye"></i>
+                                          </button>
+                                          <?php
+                                       }
+                                       ?>
+
+                                       <a data-toggle="tooltip" title="ویرایش" href="<?php print ADMIN_URL ?>edit_cat.php<?php print $url; ?>&rowId=<?php print $row['id']; ?>&p=<?php print $backend->page; ?>" class="btn-sm btn-warning"><i class="mdi mdi-pencil"></i></a>
+                                       <button data-toggle="tooltip" title="حذف" data-id="<?php print $row['id']; ?>" data-child="<?php print $backend->getCountChildForCategory($row['id']); ?>" data-idlist="<?php print $idList; ?>" data-title="<?php print $row['title_en']; ?>" data-toggle="modal" data-target="#deleteModal" type="button" 
+                                          class="btn-sm btn-danger border-0"><i class="mdi mdi-delete-empty"></i></button>
+                                    </td>
                               </tr>
                               <?php
                               ($_SESSION['sort']=='asc')?$idList++:$idList--;
@@ -338,6 +403,12 @@ $backend->redirect("$url&p=$backend->page&d=$resDel");
    }
    });
    });
+
+   function change_status(id,val){
+      var url='<?php print $url; ?>&st_id='+id+'&val='+val;
+      redirect(url);
+   }
+
    </script>
    <!-- End custom js for this page -->
 </body>
