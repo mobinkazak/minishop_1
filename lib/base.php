@@ -344,6 +344,10 @@ abstract class Base{
 		return $row;
 
 	}
+	public function dashReplacer($str){
+		$str=mb_strtolower($str);
+		return str_replace(' ','-',$str);
+	}
 
 
 }

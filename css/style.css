@@ -3528,7 +3528,8 @@ section#recent-product {
 .shop-filter {
     margin-top: 30px;
     margin-bottom: 40px;
-    text-align: center
+    text-align: center;
+    direction: rtl;
 }
 
 .shop-filter ul {
@@ -3539,14 +3540,8 @@ section#recent-product {
     margin-right: 30px;
 }
 
-.shop-filter ul li:last-child {
-    margin-right: 0
-}
-
 .shop-filter ul li a {
     font-size: 13px;
-    font-family: 'Montserrat', sans-serif;
-    text-transform: uppercase;
     color: #2f2f2f;
     padding-bottom: 8px;
     border-bottom: 2px solid transparent;
@@ -3721,24 +3716,21 @@ section#recent-product {
     color: #32c8de;
 }
 
-.product-item p.product-price {
+.product-item p.product-price span.price1 {
     color: #32c8de;
-    font-family: 'Montserrat', sans-serif;
     font-size: 17px;
     font-weight: 700;
     line-height: 25px;
-    text-transform: uppercase;
     margin-bottom: 0
 }
 
-.product-item p.product-price span {
+.product-item p.product-price span.discount1 {
     color: #a9a9a9;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 700;
     line-height: 21px;
     text-decoration: line-through;
-    margin-right: 9px;
+    margin-left: 6px;
 }
 
 .product-item .product-img .product-sale,
@@ -4956,21 +4948,7 @@ div .social-buttons > li > a::before {
 /* Section Header ends
 /*------------------------------------------------*/
 
-.product-shop .onsale {
-    font-size: 12px;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: #ffffff;
-    min-height: 20px;
-    min-width: 40px;
-    padding: 4px 8px;
-    line-height: 20px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    background: #f04933;
-}
+
 .button-add-to-cart {
     padding: 14px 18px;
     text-transform: uppercase;
@@ -5001,9 +4979,9 @@ div .social-buttons > li > a::before {
     font-size: 18px;
 }
 div.product .woocommerce-product-rating {
-    text-align: right;
+    text-align: left;
     margin-bottom: 15px;
-    float: right;
+    float: left;
     width: 40%;
 }
 div.product .woocommerce-product-rating .star-rating {
@@ -5061,6 +5039,7 @@ div.product .woocommerce-product-rating .star-rating {
 }
 .product-slider {
     position: relative;
+    direction: ltr;
 }
 .product-slider:hover .flex-direction-nav {
     opacity: 1;
@@ -5573,14 +5552,13 @@ input[type=number]::-webkit-outer-spin-button {
 /*-----------------------------------------------------------------------------------*/
 
 .variations_form .quantity {
-    display: inline-block;
+    float: right;
 }
 .variations_form .quantity input {
     position: relative;
     width: 42px;
     height: 42px;
     line-height: 38px;
-    top: -1px;
     border-radius: 0;
     box-shadow: none;
     float: none;
@@ -5665,10 +5643,11 @@ input[type=number]::-webkit-outer-spin-button {
 .tabs-nav {
     margin: 0 !important;
     padding: 0 !important;
+
 }
 .tabs-nav li {
     font-size: 14px;
-    float: left;
+    float: right;
     margin: 0;
     list-style: none;
     padding: 14px 15px 14px;
@@ -5676,8 +5655,6 @@ input[type=number]::-webkit-outer-spin-button {
     cursor: pointer;
     background-color: #3a4543;
     color: #fff;
-    /*border-top: 1px solid #66d9c1;*/
-
     border-right: 1px solid #666;
     border-bottom: none;
 }
@@ -5764,12 +5741,7 @@ p.message .close:focus {
     margin: 0;
 }
 .related-products .related-products-wrapper {
-    margin-right: -30px;
     position: relative;
-    padding: 10px 0 0;
-}
-.related-products .related-products-wrapper .row {
-    margin: 0;
 }
 .related-products .related-products-wrapper .products-top {
     display: none;
@@ -5807,7 +5779,7 @@ p.message .close:focus {
     text-indent: 3px;
 }
 .related-products .item {
-    padding-right: 30px;
+    /*padding-right: 30px;*/
 }
 /*-----------------------------------------------------------------------------------*/
 /* Products Listing
@@ -5839,7 +5811,6 @@ p.message .close:focus {
 .featured-products article {
     border: 1px solid #e8e8e8;
     margin-bottom: 60px;
-    padding-bottom: 30px;
     box-shadow: 0 0 3px rgba(0,0,0,0.05);
     border-radius: 4px;
 }
@@ -5852,7 +5823,7 @@ p.message .close:focus {
 }
 .product-listing article:hover figcaption,
 .featured-products article:hover figcaption {
-    background-color: #323a45;
+    /*background-color: #323a45;*/
 }
 .product-listing figure,
 .featured-products figure {
@@ -5867,13 +5838,13 @@ p.message .close:focus {
 .product-listing figure figcaption,
 .featured-products figure figcaption {
     color: #ffffff;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 600;
     position: absolute;
     bottom: 0;
     right: 0;
-    padding: 6px 14px;
-    background-color: #32c8de;
+    padding: 7px 17px;
+    background-color: #dc3545;
 	direction:rtl;
 }
 .product-listing del,
@@ -5888,10 +5859,7 @@ p.message .close:focus {
 .featured-products .item .title {
     text-align: center;
     font-size: 14px;
-    font-family: 'Open Sans', sans-serif;
-    padding: 17px 0;
     border-bottom: 1px solid #e5e5e5;
-    margin-bottom: 28px;
 }
 .product-listing .product.first {
     clear: both;
@@ -6175,17 +6143,15 @@ p.message .close:focus {
     background: #66d9c1;
 }
 .product-shop .onsale {
-    font-size: 12px;
-    font-weight: bold;
-    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: normal;
     color: #ffffff;
     min-height: 20px;
     min-width: 40px;
-    padding: 4px 8px;
-    line-height: 20px;
+    padding: 8px 17px;
     position: absolute;
     top: 0;
-    left: 0;
+    right: 0;
     z-index: 9;
     background: #32c8de;
 }
@@ -6195,6 +6161,8 @@ p.message .close:focus {
     font-weight: bold;
     color: #ffffff;
     background: #323a45;
+    font-size: smaller !important;
+
 }
 .button-add-to-cart:hover {
     color: #ffffff;
@@ -6277,7 +6245,7 @@ p.message .close:focus {
     border-color: #c1c1c1;
 }
 #comments img.avatar {
-    float: left;
+    float: right;
     background-color: #eeeff4;
     margin: 0;
     border-radius: 50px;
@@ -6285,7 +6253,7 @@ p.message .close:focus {
 #comments .avatar.photo {
     width: 32px;
     height: 32px;
-    margin-right: 20px;
+    margin-left: 20px;
 }
 #comments .comment-text {
     overflow: hidden;
@@ -6300,7 +6268,7 @@ p.message .close:focus {
     padding-top: 15px;
 }
 #comments .comment-text .star-rating {
-    float: right;
+    float: left;
 }
 #comments .comment-wrapper {
     display: table;
@@ -6349,8 +6317,7 @@ p.message .close:focus {
 #comments time {
     color: #93989f;
     font-size: 12px;
-    margin-left: 4px;
-    text-transform: uppercase;
+    margin-right: 4px;
 }
 #comments p {
     /*font-size: 15px;*/

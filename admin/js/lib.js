@@ -18,6 +18,10 @@ function initEditor(obj){
         toolbar2: 'print preview media | forecolor backcolor emoticons | codesample',
         image_advtab: true,
         file_browser_callback: function(field, url, type, win) {
+            // n=url.indexOf("/minishop/");
+            // if (n==-1) {
+            //     url=url.replace('/minishop/','');
+            // }
             tinyMCE.activeEditor.windowManager.open({
                 file: 'kcfinder/browse.php?opener=tinymce4&field=' + field + '&type=' + type,
                 title: 'KCFinder',
@@ -29,6 +33,7 @@ function initEditor(obj){
                 window: win,
                 input: field
             });
+            
             return false;
         }
     });
@@ -77,6 +82,10 @@ $(document).ready(function() {
 
             window.KCFinder={
                 callBack:function(url){
+                    n=url.indexOf("/minishop/");
+                    if (n==0) {
+                        url=url.replace('/minishop/','/');
+                    }
                     f.val(url);
                     window.KCFinder=null;
                 }

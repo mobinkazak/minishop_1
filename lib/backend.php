@@ -103,7 +103,7 @@ class Backend extends Base{
 	public function addCategory(){
 		$parent_id=$this->toInt($this->post('parent_id'));
 		$title=$this->safeString($this->post('title'));
-		if (!empty($parent_id) && !empty($title)) {
+		if (!empty($parent_id) || !empty($title)) {
 			if ($this->checkCategory($title,$parent_id)==0) {
 				$q="INSERT INTO categories VALUES('NULL','$title','$parent_id')";
 				return $this->query($q);
@@ -192,7 +192,7 @@ class Backend extends Base{
 
 	}
 	public function checkProdTitle($cat_id,$sub_cat_id,$title_fa){
-		$title=$this->safeString($title);
+		$title_fa=$this->safeString($title_fa);
 		$cat_id=$this->toInt($cat_id);
 		$sub_cat_id=$this->toInt($sub_cat_id);
 		$q="SELECT id FROM products WHERE title_fa='$title_fa' AND cat_id='$cat_id' AND sub_cat_id='$sub_cat_id'";
@@ -211,8 +211,7 @@ class Backend extends Base{
 		$date=date('Y-m-d H:i:s');
 		$is_special=isset($_POST['is_special'])?1:0;
 		
-		if (!empty($title_fa) && !empty($title_en) && !empty($short_desc) && !empty($long_desc) && !empty($status) 
-			&& !empty($cat_id) && !empty($sub_cat_id) ) {
+		if (!empty($title_fa) && !empty($title_en)) {
 			if ($this->checkProdTitle($cat_id, $sub_cat_id, $title_fa)==0) {
 				$q="INSERT INTO products (title_fa,title_en,short_desc,long_desc,status,cat_id,sub_cat_id,created_date,is_special) VALUES ('$title_fa','$title_en','$short_desc','$long_desc','$status','$cat_id','$sub_cat_id','$date','$is_special')";
 				return $this->query($q);
@@ -248,7 +247,7 @@ class Backend extends Base{
 		$date=date('Y-m-d H:i:s');
 
 
-		if ($thumb!='' && $img!='') {
+		if ($thumb!='') {
 			$q="UPDATE products SET thumb_img='$thumb',edited_date='$date' WHERE id='$id'";
 			$this->query($q);
 			foreach ($img as $image) {
@@ -304,6 +303,44 @@ class Backend extends Base{
 		$q="UPDATE products SET is_special='$val',edited_date='$date' WHERE id='$id'";
 		return $this->query($q);
 
+	}
+	public function deleteProduct($id){
+		$id=$this->toInt($id);
+		$q="DELETE FROM products WHERE id='$id'";
+		$this->query($q);
+		$q="DELETE FROM product_image WHERE product_id='$id'";
+		return $this->query($q);
+	}
+	public function getProductWithId($id){
+		$id=$this->toInt($id);
+		$q="SELECT * FROM products WHERE id='$id'";
+		$res=$this->query($q);
+		return $this->getRow($res);
+	}
+	public function getProdImageWithId($id){
+		$id=$this->toInt($id);
+		$q="SELECT * FROM product_image WHERE product_id='$id'";
+		$res=$this->query($q);
+		return $this->getRow($res);
+	}
+	public function updateProdStep1($id){
+		$id=$this->toInt($id);
+		$title_fa=$this->safeString($this->post('title_fa'));
+		$title_en=$this->safeString($this->post('title_en'));
+		$short_desc=$this->safeString($this->post('short_desc'));
+		$long_desc=$this->safeString($this->post('long_desc'));
+		$status=$this->toInt($this->post('status'));
+		$cat_id=$this->toInt($this->post('cat_id'));
+		$sub_cat_id=$this->toInt($this->post('sub_cat_id'));
+		$date=date('Y-m-d H:i:s');
+		$is_special=isset($_POST['is_special'])?1:0;
+		
+		if (!empty($title_fa) && !empty($title_en)) {
+				$q="UPDATE products SET title_fa='$title_fa',title_en='$title_en',short_desc='$short_desc',long_desc='$long_desc',status='$status',cat_id='$cat_id',sub_cat_id='$sub_cat_id',edited_date='$date',is_special='$is_special' WHERE id='$id'";
+				return $this->query($q);
+		}else{
+			return -1;
+		}
 	}
 	
 }

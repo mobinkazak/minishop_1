@@ -25,3 +25,7 @@ form{
 	font-weight: normal;
 	color: red;
 }
+
+.title-farsi: hover{
+	background-color: #323a45;
+}

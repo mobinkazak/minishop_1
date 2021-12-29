@@ -13912,7 +13912,7 @@ dl {
           .sidebar-icon-only .sidebar .nav .nav-item .nav-link .badge, .sidebar-icon-only .sidebar .nav .nav-item .nav-link .menu-sub-title {
             display: none; }
           .sidebar-icon-only .sidebar .nav .nav-item .nav-link .menu-title {
-            border-radius: 0 5px 5px 0px; }
+            border-radius: 5px 0px 0px 5px; }
             .rtl.sidebar-icon-only .sidebar .nav .nav-item .nav-link .menu-title {
               border-radius: 5px 0 0 5px; }
           .sidebar-icon-only .sidebar .nav .nav-item .nav-link .icon-bg {
@@ -13928,7 +13928,7 @@ dl {
           .sidebar-icon-only .sidebar .nav .nav-item .nav-link i.menu-arrow {
             display: none; }
           .sidebar-icon-only .sidebar .nav .nav-item .nav-link[aria-expanded] .menu-title {
-            border-radius: 0 5px 0 0px; }
+            border-radius: 5px 0px 0px 5px; }
             .rtl.sidebar-icon-only .sidebar .nav .nav-item .nav-link[aria-expanded] .menu-title {
               border-radius: 5px 0 0 0; }
         .sidebar-icon-only .sidebar .nav .nav-item.nav-profile {
@@ -13950,12 +13950,12 @@ dl {
           align-items: center;
           background: #161621;
           padding: 0.5rem 1.4rem;
-          left: 70px;
+          right: 70px;
           position: absolute;
-          text-align: left;
+          text-align: right;
           top: 0;
           bottom: 0;
-          width: 190px;
+          width: 190px !important;
           z-index: 1;
           line-height: 1.8; }
           .sidebar-light.sidebar-icon-only .sidebar .nav .nav-item.hover-open .nav-link .menu-title {
@@ -13973,9 +13973,10 @@ dl {
           display: block;
           padding: .5rem 0;
           background: #161621;
-          border-radius: 0 0 5px 0;
+          border-radius: 0 0 0px 5px;
+          margin-top: -5px !important;
           position: absolute;
-          left: 70px;
+          right: 70px;
           width: 190px; }
           .sidebar-light.sidebar-icon-only .sidebar .nav .nav-item.hover-open .collapse, .sidebar-light.sidebar-icon-only .sidebar .nav .nav-item.hover-open .collapsing {
             background: #fff; }
@@ -14005,7 +14006,7 @@ dl {
       .sidebar-icon-only .sidebar .nav.sub-menu {
         padding: 0 0 0 1.5rem; }
         .sidebar-icon-only .sidebar .nav.sub-menu .nav-item .nav-link {
-          text-align: left;
+          text-align: right;
           padding-left: 20px; }
         .rtl.sidebar-icon-only .sidebar .nav.sub-menu .nav-item {
           margin-right: 0;

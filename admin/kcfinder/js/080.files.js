@@ -163,10 +163,8 @@ _.selectAll = function(e) {
 
 _.returnFile = function(file) {
 
-    var button, win, fileURL = file.substr
-        ? file : _.uploadURL + "/" + _.dir + "/" + file.data('name');
+    var button, win, fileURL = file.substr ? file : _.uploadURL + "/" + _.dir + "/" + file.data('name');
     fileURL = $.$.escapeDirs(fileURL);
-
 
     if (_.opener.name == "ckeditor") {
         _.opener.CKEditor.object.tools.callFunction(_.opener.CKEditor.funcNum, fileURL, "");

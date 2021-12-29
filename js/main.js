@@ -89,6 +89,7 @@ $(document).ready(function() {
 		$shopAll.imagesLoaded().progress( function() {
 			$shopAll.isotope({
 				filter: "*",
+				isOriginLeft: false,
 				animationOptions: {
 					duration: 750,
 					itemSelector: ".product-item",
@@ -104,6 +105,7 @@ $(document).ready(function() {
 		$shopAll.imagesLoaded().progress( function() {
 			$shopAll.isotope({
 				filter: $selector,
+				isOriginLeft: false,
 				animationOptions: {
 					duration: 750,
 					itemSelector: ".product-item",

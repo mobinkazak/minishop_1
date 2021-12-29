@@ -77,7 +77,7 @@
                             $sel=($parentRow['id']==$backend->get('pid'))?'selected':'';
                             ?>
                             <option disabled></option>
-                            <option <?php print $sel; ?> class="text-center" style="background-color: #666;color:#fff;" value="<?php print $parentRow['id'] ?>"><?php print $parentRow['title']; ?></option>
+                            <option> <?php print $sel; ?> style="background-color: #dedede;color:#333;" value="<?php print $parentRow['id'] ?>"><?php print $parentRow['title']; ?></option>
                             <!-- <option  disabled value="">--مدل <?php //print $parentRow['title']; ?></option> -->
                             <?php 
                             $res2=$backend->getParentCategoryList($parentRow['id']);

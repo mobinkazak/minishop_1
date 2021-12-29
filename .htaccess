@@ -1,1 +1,3 @@
 Options -Indexes
+RewriteEngine On
+RewriteRule ^product/(.*)/(.*)$	products.php?productId=$1
