@@ -334,13 +334,27 @@ class Backend extends Base{
 		$sub_cat_id=$this->toInt($this->post('sub_cat_id'));
 		$date=date('Y-m-d H:i:s');
 		$is_special=isset($_POST['is_special'])?1:0;
-		
+		$currentProd=$this->getProductWithId($id);
+		$q="UPDATE products SET 
+		title_en='$title_en'
+		,short_desc='$short_desc'
+		,long_desc='$long_desc'
+		,status='$status'
+		,edited_date='$date'
+		,is_special='$is_special' ";
 		if (!empty($title_fa) && !empty($title_en)) {
-				$q="UPDATE products SET title_fa='$title_fa',title_en='$title_en',short_desc='$short_desc',long_desc='$long_desc',status='$status',cat_id='$cat_id',sub_cat_id='$sub_cat_id',edited_date='$date',is_special='$is_special' WHERE id='$id'";
-				return $this->query($q);
+			if ($currentProd['title_fa'] != $title_fa || $currentProd['cat_id'] != $cat_id || $currentProd['sub_cat_id'] != $sub_cat_id ){
+				if ($this->checkProdTitle($cat_id, $sub_cat_id, $title_fa)==0) {
+					$q.=" ,title_fa='$title_fa',cat_id='$cat_id',sub_cat_id='$sub_cat_id' ";
+				}else{
+					return -2;
+				}
+			}
 		}else{
 			return -1;
 		}
+		$q.=" WHERE id='$id' ";
+		return $this->query($q);
 	}
 	
 }

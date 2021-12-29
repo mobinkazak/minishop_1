@@ -31,24 +31,21 @@ else
 
 $url = "?title_fa=$title_fa&title_en=$title_en&model=$model&price=$price&code=$code&discount=$discount&cat_id=$cat_id&sub_cat_id=$sub_cat_id&status=$status&special=$is_special";
 
+$index = $backend->toInt($backend->get('index'));
 
 $thisProd = $backend->getProductWithId($index);
 $thisProdImg = $backend->getProdImageWithId($index);
 
-$index = $backend->toInt($backend->get('index'));
-
-if ($backend->post('btn_add_step1')) {
+if ($backend->post('btn_update_step1')) {
     $result = $backend->updateProdStep1($index);
     if ($result > 0) {
         $backend->redirect("$url&p=$backend->page&step=2&e=0&index=$index");
     } else {
-        $backend->redirect($url . '&step=1&e=' . $result);
+        $backend->redirect("$url&p=$backend->page&step=1&e=$result&index=$index");
     }
 }
 
-
-
-if ($backend->post('btn_add_step2')) {
+if ($backend->post('btn_update_step2')) {
     $res = $backend->updateProdStep2($index);
     if ($res == 0) {
         $backend->redirect("$url&p=$backend->page&step=3&e=0&index=$index");
@@ -57,7 +54,7 @@ if ($backend->post('btn_add_step2')) {
     }
 }
 
-if ($backend->post('btn_add_step3')) {
+if ($backend->post('btn_update_step3')) {
     $res = $backend->updateProdStep3($index);
     if ($res == 0) {
         $backend->redirect("$url&p=$backend->page&step=4&e=0&index=$index");
@@ -66,10 +63,10 @@ if ($backend->post('btn_add_step3')) {
     }
 }
 
-if ($backend->post('btn_add_step4')) {
+if ($backend->post('btn_update_step4')) {
     $res = $backend->updateProdStep4($index);
     if ($res == 0) {
-        $backend->redirect("list_prod.php$url&p=$backend->page&product=1");
+        $backend->redirect("$url&p=$backend->page&step=1&e=0&index=$index&product=1");
     } else {
         $backend->redirect("$url&p=$backend->page&step=4&e=$res&index=$index");
     }
@@ -202,12 +199,14 @@ if ($step == 2) {
                         </li>
                     </ul>
                     <div class="tab-content px-5" id="myTabContent">
-                        <?php $backend->setAlert('e', '-1', 'danger', 'برای رفتن به مرحله بعد لازم است فیلدهای زیر پر شود'); ?>
-                        <?php $backend->setAlert('e', '-2', 'danger', 'عنوان محصول وارد شده وجود دارد'); ?>
-                        <?php $backend->setAlert('e', '-3', 'danger', 'برای رفتن به مرحله بعد لازم است فیلدهای زیر پر باشد'); ?>
-                        <?php $backend->setAlert('e', '-4', 'danger', 'لطفا تصاویر محصول خود را انتخاب کنید'); ?>
-                        <?php $backend->setAlert('e', '-5', 'danger', 'برای اتمام مراحل ثبت محصول فیلدهای زیر را هم پر کنید'); ?>
-
+                        <?php $backend->setAlert('e', '-1', 'danger', 'برای رفتن به مرحله بعد لازم است فیلدهای زیر پر شود');
+                        $backend->setAlert('e', '-2', 'danger', 'عنوان محصول وارد شده وجود دارد');
+                        $backend->setAlert('e', '-3', 'danger', 'برای رفتن به مرحله بعد لازم است فیلدهای زیر پر باشد');
+                        $backend->setAlert('e', '-4', 'danger', 'لطفا تصاویر محصول خود را انتخاب کنید');
+                        $backend->setAlert('e', '-5', 'danger', 'برای اتمام مراحل ثبت محصول فیلدهای زیر را هم پر کنید'); 
+                        $backend->setAlert('product', '1', 'success', "محصول مورد نظر با موفقیت ویرایش یافت"); 
+                        ?>
+                        
                         <div class="tab-pane fade <?php print $activeTab1; ?> <?php print $showTab1; ?>" id="step1" role="tabpanel">
                             <form class="form_1" method="post" action="" autocomplete="off">
                                 <div class="form-group">
@@ -216,8 +215,8 @@ if ($step == 2) {
                                         <option value="0">دسته بندی مورد نظر خود را انتخاب کنید</option>
                                         <?php
 
-                                        $res = $backend->getParentCategoryList();
-                                        while ($parentRow = $backend->getRow($res)) {
+                                        $catRes = $backend->getParentCategoryList();
+                                        while ($parentRow = $backend->getRow($catRes)) {
                                         ?>
                                             <option <?php if ($index) ($parentRow['id'] == $thisProd['cat_id']) ? print 'selected' : print ''; ?> value="<?php print $parentRow['id'] ?>"><?php print $parentRow['title']; ?>
                                             </option>
@@ -277,9 +276,9 @@ if ($step == 2) {
                                 </div>
                                 <div class="clearfix mb-1"></div>
 
-                                <button type="submit" name="btn_add_step1" class="btn btn-info mr-2" value="1">مرحله
+                                <button type="submit" name="btn_update_step1" class="btn btn-info mr-2" value="1">مرحله
                                     بعد</button>
-                                <a href="<?php print ADMIN_URL . "list_prod.php$url&p=$backend->page" ?>" class="btn btn-light">لغو</a>
+                                <a href="<?php print ADMIN_URL . "list_prod.php$url&p=$backend->page" ?>" class="btn btn-light">بازگشت</a>
                             </form>
                         </div>
                         <div class="tab-pane fade <?php print $activeTab2 ?> <?php print $showTab2; ?>" id="step2" role="tabpanel">
@@ -318,10 +317,9 @@ if ($step == 2) {
                                     <label for="quantity">موجودی انبار</label><span class="star"></span>
                                     <input type="text" dir="ltr" class="form-control" name="quantity" id="quantity" value="<?php if ($index) print $thisProd['quantity']; ?>">
                                 </div>
-
-                                <button type="submit" name="btn_add_step2" class="btn btn-info mr-2" value="1">مرحله
+                                <a href="<?php print ADMIN_URL . "edit_prod.php$url&p=$backend->page&step=1&e=0&index=$index" ?>" class="btn btn-danger">مرحله قبل</a>
+                                <button type="submit" name="btn_update_step2" class="btn btn-info mr-2" value="1">مرحله
                                     بعد</button>
-                                <a href="<?php print ADMIN_URL . "edit_prod.php$url&p=$backend->page&step=1&e=0&index=$index" ?>" class="btn btn-light">بازگشت</a>
                             </form>
                         </div>
                         <!-- step 3 -->
@@ -354,10 +352,9 @@ if ($step == 2) {
                                         </td>
                                     </tr>
                                 </table>
-
-                                <button type="submit" name="btn_add_step3" class="btn btn-info mr-2" value="1">مرحله
+                                <a href="<?php print ADMIN_URL . "edit_prod.php$url&p=$backend->page&step=2&e=0&index=$index" ?>" class="btn btn-danger">مرحله قبل</a>
+                                <button type="submit" name="btn_update_step3" class="btn btn-info mr-2" value="1">مرحله
                                     بعد</button>
-                                <a href="<?php print ADMIN_URL . "edit_prod.php$url&p=$backend->page&step=2&e=0&index=$index" ?>" class="btn btn-light">بازگشت</a>
 
                             </form>
                         </div>
@@ -373,9 +370,9 @@ if ($step == 2) {
                                     <label for="meta_desc">توضیحات (سئو)</label><span class="star"></span>
                                     <textarea class="form-control" name="meta_desc" id="meta_desc"><?php if ($index) print $thisProd['meta_desc']; ?></textarea>
                                 </div>
-                                <button type="submit" name="btn_add_step4" class="btn btn-warning mr-2" value="1">تکمیل
+                                <a href="<?php print ADMIN_URL . "edit_prod.php$url&p=$backend->page&step=3&e=0&index=$index" ?>" class="btn btn-danger">مرحله قبل</a>
+                                <button type="submit" name="btn_update_step4" class="btn btn-success mr-2" value="1">تکمیل
                                     ویرایش</button>
-                                <a href="<?php print ADMIN_URL . "edit_prod.php$url&p=$backend->page&step=3&e=0&index=$index" ?>" class="btn btn-light">بازگشت</a>
                             </form>
                         </div>
                     </div>

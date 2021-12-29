@@ -311,11 +311,9 @@ $index=$backend->toInt($backend->get('index'));
                                     <label for="quantity">موجودی انبار</label><span class="star"></span>
                                     <input type="text" dir="ltr" class="form-control" name="quantity" id="quantity" value="<?php if($index)print $thisProd['quantity']; ?>">
                                 </div>
-
+                                <a href="<?php print ADMIN_URL ?>add_prod.php?step=1&e=0&index=<?php print $index; ?>" class="btn btn-danger">مرحله قبل</a>
                                 <button type="submit" name="btn_add_step2" class="btn btn-info mr-2" value="1">مرحله
                                     بعد</button>
-                                <a href="<?php print ADMIN_URL ?>add_prod.php?step=1&e=0&index=<?php print $index; ?>"
-                                    class="btn btn-light">بازگشت</a>
                             </form>
                         </div>
                         <!-- step 3 -->
@@ -354,12 +352,9 @@ $index=$backend->toInt($backend->get('index'));
                                         </td>
                                     </tr>
                                 </table>
-
+                                <a href="<?php print ADMIN_URL ?>add_prod.php?step=2&e=0&index=<?php print $index; ?>" class="btn btn-danger">مرحله قبل</a>
                                 <button type="submit" name="btn_add_step3" class="btn btn-info mr-2" value="1">مرحله
                                     بعد</button>
-                                <a href="<?php print ADMIN_URL ?>add_prod.php?step=2&e=0&index=<?php print $index; ?>"
-                                    class="btn btn-light">بازگشت</a>
-
                             </form>
                         </div>
 
@@ -376,10 +371,11 @@ $index=$backend->toInt($backend->get('index'));
                                     <label for="meta_desc">توضیحات (سئو)</label><span class="star"></span>
                                     <textarea class="form-control" name="meta_desc" id="meta_desc"><?php if($index)print $thisProd['meta_desc']; ?></textarea>
                                 </div>
-                                <button type="submit" name="btn_add_step4" class="btn btn-success mr-2"
-                                    value="1">پایان</button>
                                 <a href="<?php print ADMIN_URL ?>add_prod.php?step=3&e=0&index=<?php print $index; ?>"
-                                    class="btn btn-light">بازگشت</a>
+                                    class="btn btn-danger">مرحله قبل</a>
+                                <button type="submit" name="btn_add_step4" class="btn btn-success mr-2"
+                                    value="1">ثبت محصول</button>
+                                
                             </form>
                         </div>
                     </div>

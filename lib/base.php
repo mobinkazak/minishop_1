@@ -292,8 +292,8 @@ abstract class Base{
 			?>
 			<a href="<?php print $url2 ?>">
 				<?php
-				print $title; 
 				print $span;
+				print $title; 
 				?>
 			</a>
 			<?php

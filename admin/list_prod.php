@@ -298,7 +298,7 @@ if ($is_special >= 0)
                                                 <th><?php $backend->tableFieldSort($url,'زیردسته','sub_cat_id'); ?></th>
                                                 <th><?php $backend->tableFieldSort($url,'مدل','model'); ?></th>
                                                 <th><?php $backend->tableFieldSort($url,'کد','code'); ?></th>
-                                                <th><?php $backend->tableFieldSort($url,'قیمت','price'); ?></th>
+                                                <th><?php $backend->tableFieldSort($url,'قیمت','price'); ?>(تومان)</th>
                                                 <?php 
                                     if ($discount!="") {
                                     ?>
@@ -329,7 +329,7 @@ if ($is_special >= 0)
                                                     <?php print $row['title_en']; ?></td>
                                                 <td><?php print $cat['title']; ?></td>
                                                 <td><?php (isset($parent))?print $parent['title']:print''; ?></td>
-                                                <td><?php print $row['model']; ?></td>
+                                                <td class="text-wrap"><?php print $row['model']; ?></td>
                                                 <td><?php print $row['code']; ?></td>
                                                 <td><?php print number_format($backend->toFloat($row['price'])); ?></td>
                                                 <?php 
@@ -346,7 +346,7 @@ if ($is_special >= 0)
                                        if ($row['is_special']==1) {
                                           ?>
                                                     <button
-                                                        onclick="redirect('<?php print "$url&sp_id=$row[id]&val=0"; ?>')"
+                                                        onclick="redirect('<?php print "$url&p=$backend->page&sp_id=$row[id]&val=0"; ?>')"
                                                         data-toggle="tooltip" title="غیر ویژه کردن محصول" type="button"
                                                         class="btn-sm btn-danger border-0">
                                                         <i class="mdi mdi-star-off"></i>
@@ -355,7 +355,7 @@ if ($is_special >= 0)
                                        }else{
                                           ?>
                                                     <button
-                                                        onclick="redirect('<?php print "$url&sp_id=$row[id]&val=1"; ?>')"
+                                                        onclick="redirect('<?php print "$url&p=$backend->page&sp_id=$row[id]&val=1"; ?>')"
                                                         data-toggle="tooltip" title="ویژه سازی محصول" type="button"
                                                         class="btn-sm btn-info border-0">
                                                         <i class="mdi mdi-star"></i>
@@ -387,6 +387,7 @@ if ($is_special >= 0)
                                                     <a data-toggle="tooltip" title="ویرایش"
                                                         href="<?php print ADMIN_URL ?>edit_prod.php<?php print $url; ?>&index=<?php print $row['id']; ?>&p=<?php print $backend->page; ?>"
                                                         class="btn-sm btn-warning"><i class="mdi mdi-pencil"></i></a>
+
                                                     <button data-id="<?php print $row['id']; ?>"
                                                         data-idlist="<?php print $idList; ?>"
                                                         data-title="<?php print $row['title_fa']; ?>"
@@ -483,7 +484,7 @@ if ($is_special >= 0)
     });
 
     function change_status(id, val) {
-        var url = '<?php print $url; ?>&st_id=' + id + '&val=' + val;
+        var url = '<?php print "$url&p=$backend->page"; ?>&st_id=' + id + '&val=' + val;
         redirect(url);
     }
     </script>
