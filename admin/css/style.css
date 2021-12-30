@@ -290,3 +290,12 @@ span.menu-title{
 #thumb_img{
   cursor: pointer;
 }
+input[type="text"]:-moz-placeholder {
+    text-align: right;
+}
+input[type="text"]:-ms-input-placeholder {
+    text-align: right;
+}
+input[type="text"]::-webkit-input-placeholder {
+    text-align: right;
+}

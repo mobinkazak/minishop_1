@@ -41,19 +41,12 @@
 				<form id="login_form" autocomplete="off" method="post" action="">
 					<div class="form-group">
 						<div class="col-sm-12">
-							<input type="email" id="email" class="form-control fadeIn second" name="email" placeholder="ایمیل">
+							<input type="email" id="email" dir="ltr" class="form-control fadeIn second" name="email" placeholder="ایمیل">
 						</div>
 					</div>
 					<div class="form-group">
 						<div class="col-sm-12">
-							<input type="password" id="password" class="form-control fadeIn third" name="password" placeholder="کلمه عبور">
-						</div>
-					</div>
-					<div class="form-check fadeIn third">
-						<div class="col-sm-12">
-						
-						<label class="form-check-label text-muted" for="defaultCheck1">
-							<input class="form-check-input" type="checkbox" id="defaultCheck1"><small>مرا به خاطر بسپار</small></label>
+							<input type="password" dir="ltr" id="password" class="form-control fadeIn third" name="password" placeholder="کلمه عبور">
 						</div>
 					</div>
 					<div class="form-group">

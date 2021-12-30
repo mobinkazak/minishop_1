@@ -24,14 +24,14 @@
 											<a target="_blank" href="<?php print $prodUrl; ?>" >
 												<img src="<?php print SITE_URL.$specialRows['thumb_img'] ?>" class="img-responsive" alt="<?php print $specialRows['title_fa'] ?>" title="<?php print $specialRows['title_fa'] ?>" >
 											</a>
-											<figcaption class=" <?php ($specialRows['discount']>0)?print 'd-block':print 'd-none'; ?>">
+											<figcaption class=" <?php ($specialRows['discount']!='')?print 'd-block':print 'd-none'; ?>">
 											<span><?php print number_format($frontend->toInt($specialRows['discount'])); ?></span>
 											<span>تومان</span>
 											</figcaption>
 										</figure>
 										<h4 class="title py-2 mb-0"><a target="_blank" href="<?php print $prodUrl; ?>" ><?php print $specialRows['title_fa'] ?></a></h4>
 										
-										<div class="title-farsi col-md-12 col-sm-12 py-2 bg-info text-white" dir="rtl" style="border-bottom:1px solid #e5e5e5;border-left:0 !important;<?php ($specialRows['discount']>0)?print 'text-decoration: line-through;':print ''; ?> " >
+										<div class="title-farsi col-md-12 col-sm-12 py-2 bg-info text-white" dir="rtl" style="border-bottom:1px solid #e5e5e5;border-left:0 !important;<?php ($specialRows['discount']!='')?print 'text-decoration: line-through;':print ''; ?> " >
 											<span><?php print number_format($frontend->toInt($specialRows['price'])); ?></span>
 											<span>تومان</span>
 										</div>

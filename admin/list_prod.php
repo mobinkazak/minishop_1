@@ -455,7 +455,6 @@ if ($is_special >= 0)
             var title = button.data('title');
             var idlist = button.data('idlist');
             var id = button.data('id');
-            console.log(button);
             $(this).find('#delete-title').html(title);
             $(this).find('#delete-id').html(idlist);
             $(this).find('#delete-btn').attr('data-del-id', id);

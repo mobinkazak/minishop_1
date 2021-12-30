@@ -198,7 +198,6 @@ class Backend extends Base{
 		$q="SELECT id FROM products WHERE title_fa='$title_fa' AND cat_id='$cat_id' AND sub_cat_id='$sub_cat_id'";
 		$r=$this->query($q);
 		return $r->num_rows;
-
 	}
 	public function addProdStep1(){
 		$title_fa=$this->safeString($this->post('title_fa'));
@@ -231,7 +230,7 @@ class Backend extends Base{
 		$id=$this->toInt($id);
 		$date=date('Y-m-d H:i:s');
 
-		if ($model!='' && $code!='' && $price!='' && $discount!='' && $quantity!=0) {
+		if ($model!='' && $code!='' && $price!='') {
 			$q="UPDATE products SET model='$model',code='$code',price='$price',discount='$discount',quantity='$quantity',edited_date='$date' WHERE id='$id'";
 			$this->query($q);
 		}else{
@@ -245,7 +244,6 @@ class Backend extends Base{
 		$img=$_POST['img'];
 		$i=0;
 		$date=date('Y-m-d H:i:s');
-
 
 		if ($thumb!='') {
 			$q="UPDATE products SET thumb_img='$thumb',edited_date='$date' WHERE id='$id'";
@@ -317,11 +315,11 @@ class Backend extends Base{
 		$res=$this->query($q);
 		return $this->getRow($res);
 	}
-	public function getProdImageWithId($id){
+	public function getImageProductList($id){
 		$id=$this->toInt($id);
 		$q="SELECT * FROM product_image WHERE product_id='$id'";
-		$res=$this->query($q);
-		return $this->getRow($res);
+		return $this->query($q);
+
 	}
 	public function updateProdStep1($id){
 		$id=$this->toInt($id);
@@ -356,5 +354,35 @@ class Backend extends Base{
 		$q.=" WHERE id='$id' ";
 		return $this->query($q);
 	}
-	
+	public function deleteImageProduct($img_id,$product_id){
+		$img_id=$this->toInt($img_id);
+		$product_id=$this->toInt($product_id);
+		$q="DELETE FROM product_image WHERE id='$img_id' AND product_id='$product_id'";
+		return $this->query($q);
+	}
+	public function updateProdStep3Edited($id){
+		$thumb=$this->safeString($this->post('thumb_img'));
+		$id=$this->toInt($id);
+		$image=$_POST['img'];
+		$date=date('Y-m-d H:i:s');
+
+		$i=0;
+		if($thumb!=''){
+			$q="UPDATE products SET thumb_img='$thumb',edited_date='$date' WHERE id='$id' ";
+			$this->query($q);
+			foreach ($image as $img) {
+				$alt=$this->safeString(trim($_POST['alt'][$i]));
+				$imgStatus=$this->safeString(trim($_POST['imgStatus'][$i]));
+				$img=$this->safeString(trim($img));
+				if ($imgStatus==0) 
+					$q2="INSERT INTO product_image VALUES(NULL,'$id','$img','$alt')";
+				else
+					$q2="UPDATE product_image SET img='$img', alt='$alt' WHERE product_id='$id' AND id='$imgStatus' ";
+				$this->query($q2);
+				$i++;
+			}
+		}else{
+			return -4;
+		}
+	}
 }
