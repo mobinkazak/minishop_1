@@ -310,51 +310,23 @@ if ($step == 2) {
                                         <th class="text-center">توضیحات تصویر</th>
                                         <th class="text-center">عملیات</th>
                                     </tr>
-                                    <?php
-                                    $resultImage = $backend->getImageProductList($index);
-                                    if (!$index) {
-                                    ?>
-                                        <tr class="text-center">
-                                            <td>
-                                                <input type="text" dir="ltr" name="img[]" placeholder="برای انتخاب تصویر لطفا کلیک نمایید" class="form-control imgUploader">
-                                            </td>
-                                            <td>
-                                                <input type="text" dir="ltr" name="alt[]" class="form-control">
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-success" id="btn-add-row">
-                                                    <span class="mdi mdi-plus"></span>
-                                                </button>
-                                                <button style="display:none;" type="button" class="btn btn-danger" id="btn-del-row">
-                                                    <span class="mdi mdi-minus"></span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <?php
-                                    } else {
-                                        while ($img = $backend->getRow($resultImage)) {
-                                        ?>
-                                            <tr class="text-center">
-                                                <td>
-                                                    <input type="text" dir="ltr" name="img[]" placeholder="برای انتخاب تصویر لطفا کلیک نمایید" class="form-control imgUploader" value="<?php print $img['img']; ?>">
-                                                </td>
-                                                <td>
-                                                    <input type="text" dir="ltr" name="alt[]" class="form-control" value="<?php print $img['alt']; ?>">
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn-sm btn-success border-0" id="btn-add-row">
-                                                        <span class="mdi mdi-plus"></span>
-                                                    </button>
-                                                    <button style="display:none;" type="button" class="btn-sm btn-danger border-0" id="btn-del-row">
-                                                        <span class="mdi mdi-minus"></span>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                    <?php
-                                        }
-                                    }
-                                    ?>
 
+                                    <tr class="text-center">
+                                        <td>
+                                            <input type="text" dir="ltr" name="img[]" placeholder="برای انتخاب تصویر لطفا کلیک نمایید" class="form-control imgUploader">
+                                        </td>
+                                        <td>
+                                            <input type="text" dir="ltr" name="alt[]" class="form-control">
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-success" id="btn-add-row">
+                                                <span class="mdi mdi-plus"></span>
+                                            </button>
+                                            <button style="display:none;" type="button" class="btn btn-danger" id="btn-del-row">
+                                                <span class="mdi mdi-minus"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </table>
                                 <a href="<?php print ADMIN_URL ?>add_prod.php?step=2&e=0&index=<?php print $index; ?>" class="btn btn-danger">مرحله قبل</a>
                                 <button type="submit" name="btn_add_step3" class="btn btn-info mr-2" value="1">مرحله
@@ -373,7 +345,7 @@ if ($step == 2) {
                                     <label for="meta_desc">توضیحات (سئو)</label><span class="star"></span>
                                     <textarea class="form-control" name="meta_desc" id="meta_desc"><?php if ($index) print $thisProd['meta_desc']; ?></textarea>
                                 </div>
-                                
+
                                 <button type="submit" name="btn_add_step4" class="btn btn-success mr-2" value="1">ثبت محصول</button>
 
                             </form>
@@ -410,10 +382,20 @@ if ($step == 2) {
     <script src="js/select2.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="tinymce/tinymce.min.js"></script>
+    <script src="js/numeral.min.js"></script>
     <script type="text/javascript">
+        function priceFormat(price) {
+            var val = numeral($(price).val()).format('0,0');
+            $(price).val(val);
+        }
         $(document).ready(function() {
             initEditor('#long_desc');
 
+            priceFormat('#price');
+            priceFormat('#discount');
+            $('#price,#discount').keyup(function() {
+                priceFormat($(this));
+            });
 
             $('#cat_id').select2();
             $('#sub_cat_id').select2();

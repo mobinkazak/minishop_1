@@ -7,10 +7,13 @@ date_default_timezone_set('Asia/Tehran');
 
 require_once 'config.php';
 require_once 'lib/jdf.php';
+// require_once 'lib/PHPMailer.php';
+
 require_once 'lib/base.php';
 
 if (stristr($_SERVER['REQUEST_URI'],'/admin/')) {
 	require_once 'lib/backend.php';
+
 	$backend=new Backend();
 	if (!stristr($_SERVER['PHP_SELF'],'login.php')) {
 		if (!$backend->isLogin('admin_id')) {
@@ -22,8 +25,7 @@ if (stristr($_SERVER['REQUEST_URI'],'/admin/')) {
 	    unset($_SESSION['admin_id']);
 	    session_destroy();
 	    $backend->redirect('login.php?msg=logout');
-  	}
-
+	}
   	
 
 }else{

@@ -47,7 +47,7 @@ class Backend extends Base{
 		$q="UPDATE users SET firstname='$fn',lastname='$ln',mobile='$mobile',address='$address' ";
 
 		if ($currentProfile['email']!=$email) {
-			if ($this->checkUserEmail($email)) {
+			if ($this->checkUserEmail($email)==0) {
 				$q .= " ,email='$email' ";
 			}else{
 				return -1;//email exist
@@ -226,6 +226,8 @@ class Backend extends Base{
 		$code=$this->safeString($this->post('code'));
 		$price=$this->safeString($this->post('price'));
 		$discount=$this->safeString($this->post('discount'));
+		$price=str_ireplace(',','',$price);
+		$discount=str_ireplace(',','',$discount);
 		$quantity=$this->toInt($this->post('quantity'));
 		$id=$this->toInt($id);
 		$date=date('Y-m-d H:i:s');

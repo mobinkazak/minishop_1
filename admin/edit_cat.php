@@ -149,11 +149,7 @@
     <script src="assets/js/dashboard.js"></script>
     <script type="text/javascript" src="js/jquery.validate.js"></script>
     <script src="js/lib.js"></script>
-    <script>
-      $(document).ready(function() {
-
-      });
-    </script>
+    
     <!-- End custom js for this page -->
   </body>
 </html>

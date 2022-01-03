@@ -1,5 +1,7 @@
 <?php
 defined('DB_HOST') or die;
+use PHPMailer\PHPMailer\PHPMailer;
+
 abstract class Base{
 
 	private $dbLink=null;
@@ -133,15 +135,9 @@ abstract class Base{
 	}
 	public function checkUserEmail($email){
 		$email=$this->safeString($email);
-		$q="SELECT COUNT(*) AS n FROM users WHERE email='$email'";
-		$res=$this->query($q);
-		$row=$this->getRow($res);
-		$this->freeResult($res);
-		if ($row['n']>0) {
-			return false;
-		}else{
-			return true;
-		}
+		$q="SELECT id FROM users WHERE email='$email'";
+		$r=$this->query($q);
+		return $r->num_rows;
 	}
 
 	public function uploadImg($fieldName,$uploadFolderName){
@@ -348,6 +344,25 @@ abstract class Base{
 		$str=mb_strtolower($str);
 		return str_replace(' ','-',$str);
 	}
-
+	public function sendEmail($to,$subject,$body){
+		$mail = new PHPMailer(true);
+		$mail->CharSet = 'UTF-8';
+		$mail->isSMTP();
+		$mail->Host       = MAIL_HOST;
+		$mail->SMTPAuth   = true;
+		$mail->Username   = MAIL_USERNAME;
+		$mail->Password   = MAIL_PASSWORD;
+		$mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+		$mail->Port       = 465;
+	
+		$mail->setFrom(MAIL_FROM, MAIL_FROM_NAME);
+		$mail->addAddress($to, '');
+	
+		$mail->isHTML(true);
+		$mail->Subject = $subject;
+		$mail->Body    = $body;
+	
+		return $mail->send();
+	}
 
 }

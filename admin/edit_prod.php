@@ -394,10 +394,10 @@ if ($step == 2) {
                                                 <input type="text" placeholder="توضیح کوتاه تصویر" name="alt[]" class="form-control">
                                             </td>
                                             <td>
-                                                <button type="button" class="btn-sm btn-success border-0" id="btn-add-row">
+                                                <button type="button" class="btn-sm btn-success border-0 btn-add-row">
                                                     <span class="mdi mdi-plus"></span>
                                                 </button>
-                                                <button style="display:none;" type="button" class="btn-sm btn-danger border-0" id="btn-del-row">
+                                                <button style="display:none;" type="button" class="btn-sm btn-danger border-0 btn-del-row">
                                                     <span class="mdi mdi-minus"></span>
                                                 </button>
                                                 <input type="hidden" value="0" name="imgStatus[]">
@@ -420,21 +420,19 @@ if ($step == 2) {
                                                     </a>
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn-sm btn-success border-0" id="btn-add-row">
+                                                    <button type="button" class="btn-sm btn-success border-0 btn-add-row">
                                                         <span class="mdi mdi-plus"></span>
                                                     </button>
-                                                    <button data-title="<?php print $img['alt']; ?>" data-id="<?php print $img['id']; ?>" style="display:inline;" type="button" class="btn-sm btn-danger border-0" id="btn-del-row">
+                                                    <button data-title="<?php print $img['alt']; ?>" data-id="<?php print $img['id']; ?>" style="display:inline;" type="button" class="btn-sm btn-danger border-0 btn-del-row">
                                                         <span class="mdi mdi-minus"></span>
                                                     </button>
-                                                <input type="hidden" value="<?php print $img['id']; ?>" name="imgStatus[]">
-
+                                                    <input type="hidden" value="<?php print $img['id']; ?>" name="imgStatus[]">
                                                 </td>
                                             </tr>
                                     <?php
                                         }
                                     }
                                     ?>
-
                                 </table>
                                 <a href="<?php print ADMIN_URL . "edit_prod.php$url&p=$backend->page&step=2&e=0&index=$index" ?>" class="btn btn-danger">مرحله قبل</a>
                                 <button type="submit" name="btn_update_step3" class="btn btn-info mr-2" value="1">مرحله
@@ -484,8 +482,42 @@ if ($step == 2) {
     <script src="js/select2.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="tinymce/tinymce.min.js"></script>
+    <script src="js/numeral.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+
+            $('.btn-add-row').click(function() {
+                var tr = $('#tbl-list tr').eq(1).clone(true);
+                tr.find('#btn-del-row').show();
+                tr.find('input[type="text"]').val('');
+                tr.find('input[name="imgStatus[]"]').val(0);
+                tr.find('img').remove();
+                tr.find('.btn-del-row').attr('data-title', '');
+                tr.find('.btn-del-row').attr('data-id', 0);
+                $('#tbl-list').append(tr);
+            });
+
+            $('.btn-del-row').click(function() {
+                if ($(this).attr('data-id') == 0)
+                    $(this).parent().parent().remove();
+                else {
+                    var data = $(this);
+                    $('#deleteModal').modal('show', data);
+                }
+            });
+
+            $('#deleteModal').on('shown.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var title = button.data('title');
+                var id = button.data('id');
+                $(this).find('#delete-title').html(title);
+                $(this).find('#delete-btn').attr('data-del-id', id);
+            });
+
+            $('#delete-btn').click(function() {
+                var id = $(this).attr('data-del-id');
+                redirect('<?php print "$url&p=$backend->page&step=3&index=$index&img_id=" ?>' + id);
+            });
 
             $('.img-show').click(function() {
                 $('#image-box').toggle('slow');
@@ -510,39 +542,16 @@ if ($step == 2) {
                     $('#sub_cat_id option:gt(0)').remove();
                 }
             });
-
-            $('#btn-add-row').on('click', function() {
-                var tr = $('#tbl-list tr').eq(1).clone(true);
-                tr.find('#btn-del-row').show();
-                tr.find('input[type="text"]').val('');
-                tr.find('input[name="imgStatus[]"]').val(0);
-                tr.find('img').remove();
-                tr.find('#btn-del-row').attr('data-title', '');
-                tr.find('#btn-del-row').attr('data-id', 0);
-                $('#tbl-list').append(tr);
-            });
-            $('#btn-del-row').on('click', function() {
-                if ($(this).attr('data-id') == 0)
-                    $(this).parent().parent().remove();
-                else {
-                    var data = $(this);
-                    $('#deleteModal').modal('show', data);
-                }
-            });
-
-            $('#deleteModal').on('shown.bs.modal', function(event) {
-                var button = $(event.relatedTarget);
-                var title = button.data('title');
-                var id = button.data('id');
-                $(this).find('#delete-title').html(title);
-                $(this).find('#delete-btn').attr('data-del-id', id);
-            });
-
-            $('#delete-btn').click(function() {
-                var id = $(this).attr('data-del-id');
-                redirect('<?php print "$url&p=$backend->page&step=3&index=$index&img_id=" ?>' + id);
+            priceFormat($('#price'));
+            priceFormat($('#discount'));
+            $('#price,#discount').keyup(function(){
+                priceFormat($(this));
             });
         });
+        function priceFormat(price){
+            var val=numeral($(price).val()).format('0,0');
+            $(price).val(val);
+        }
     </script>
 </body>
 
