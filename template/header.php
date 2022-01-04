@@ -1,3 +1,7 @@
+<?php
+if($frontend->isLogin('user_id'))
+	$profile = $frontend->getProfile();
+?>
 
 <header>
 	<!-- Top bar starts -->
@@ -55,16 +59,16 @@
 			<!-- Shopping kart ends -->
 
 			<!-- Langauge starts -->
-			
+
 
 			<!-- Search section for responsive design -->
 			<div class="tb-search pull-left">
 				<a href="#" class="b-dropdown"><i class="fa fa-search square-2 rounded-1 bg-color white"></i></a>
 				<div class="b-dropdown-block">
-					<form >
+					<form>
 						<!-- Input Group -->
 						<div class="input-group">
-							
+
 							<input type="text" class="form-control" placeholder="جستجو...">
 							<div class="input-group-prepend">
 								<button class="btn btn-color" type="button"><i class="fa fa-search"></i></button>
@@ -86,8 +90,8 @@
 			<div class="tb-social pull-right">
 				<div class="brand-bg text-right">
 					<!-- Brand Icons -->
-					
-					
+
+
 				</div>
 			</div>
 			<!-- Social media ends -->
@@ -121,7 +125,7 @@
 									<button class="btn btn-color" type="button">جستجو</button>
 
 								</div>
-								
+
 							</div>
 
 						</form>
@@ -249,15 +253,30 @@
 
 						<li><a href="about.html">About Us</a></li>
 						<li class="pull-left">
-							<a href="#"> حساب کاربری <i class="ml-3 fa fa-user"></i></a>
-							<ul>
-								<li><a href="signin.html"><span>ورود</span></a></li>
-								<li><a href="<?php print SITE_URL; ?>register.php"><span>ثبت نام</span></a></li>
-							</ul>
+						<?php
+							if (!$frontend->isLogin('user_id')) {
+							?>
+								<a href="#"> حساب کاربری <i class="ml-3 fa fa-user"></i></a>
+								<ul>
+									<li><a href="<?php print SITE_URL; ?>/login.php"><span>ورود</span></a></li>
+									<li><a href="<?php print SITE_URL; ?>/register.php"><span>ثبت نام</span></a></li>
+								</ul>
+							<?php
+							} else {
+							?>
+								<a href="#"> <?php print $profile['firstname'].' '.$profile['lastname'] ?> <i class="ml-3 fa fa-user"></i></a>
+								<ul>
+									<li><a href="<?php print SITE_URL ?>/profile.php"><span>مشخصات</span></a></li>
+									<li><a href="?logout=1"><span>خروج از سیستم</span></a></li>
+								</ul>
+							<?php
+							}
+							?>
+
 						</li>
-						
+
 					</ul>
-					
+
 				</div>
 			</div>
 		</div>

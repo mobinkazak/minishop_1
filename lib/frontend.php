@@ -35,6 +35,31 @@ class Frontend extends Base
 			return -1;
 		}
 	}
+	public function login(){
+		$email = $this->safeString($this->post('email'));
+		$pass = $this->safeString($this->post('pass'));
+		$q="SELECT * FROM users WHERE email='$email' AND password='$pass' AND status='1' AND is_admin='0' ";
+		$res=$this->query($q);
+		$row=$this->getRow($res);
+		$this->freeResult($res);
+		if($email!=''&&$pass!=''){
+			if(isset($row['id'])){
+				$_SESSION['user_id']=$row['id'];
+				return 1;
+			}else
+				return -2;
+		}else{
+			return -1;
+		}
+	}
+	public function getProfile(){
+		$id=$_SESSION['user_id'];
+		$q="SELECT * FROM users WHERE id='$id'";
+		$res=$this->query($q);
+		$row=$this->getRow($res);
+		$this->freeResult($res);
+		return $row;
+	}
 	public function getSpecialProd($n = 4)
 	{
 		$n = $this->toInt($n);

@@ -1,5 +1,9 @@
 <?php require_once 'loader.php';
 
+if($frontend->isLogin('user_id'))
+	$frontend->redirect('profile.php');
+
+
 if ($frontend->post('btn_reg')) {
 	$res = $frontend->register();
 	if ($res > 0)
@@ -86,7 +90,7 @@ if ($frontend->post('btn_reg')) {
 
 					<div class="col-md-7 mx-auto">
 						<?php
-						$frontend->setAlert('err', '-1', 'danger', 'لطفا فیلد های زیر را پر کنید');
+						$frontend->setAlert('err', '-1', 'danger', 'لطفا فیلد های زیر را وارد کنید');
 						$frontend->setAlert('err', '-2', 'danger', 'کلمه عبور با تکرار کلمه عبور یکسان نمیباشد');
 						$frontend->setAlert('err', '-3', 'danger', 'ایمیل وارد شده قبلا ثبت شده است');
 						$frontend->setAlert('err', '-4', 'danger', 'کلمه عبور باید بیشتر از 7 کاراکتر و ترکیبی از حروف کوچک-بزرگ و اعداد باشد');
@@ -113,9 +117,6 @@ if ($frontend->post('btn_reg')) {
 							<div class="mb10">
 								<label for="email" class="control-label">ایمیل</label><span class="star"></span>
 								<input type="text" name="email" id="email" class="form-control" placeholder="ایمیل خود را وارد کنید" dir="ltr" />
-								<div class="invalid-feedback">
-
-								</div>
 							</div>
 
 							<div class="mb10">
@@ -165,46 +166,30 @@ if ($frontend->post('btn_reg')) {
 	<script>
 		$(document).ready(function() {
 
-			$('#email').blur(function() {
-				var email = $(this).val();
-				if (email != '') {
-					$('.invalid-feedback').html('');
-
-					$.post("ajax.php", {
-							'do': 'checkEmail',
-							'email': email
-						},
-						function(data) {
-							if (data == 1) {
-								$('#email').addClass('is-invalid').removeClass('is-valid');
-								$('.invalid-feedback').html('ایمیل وارد شده قبلا ثبت شده است');
-							} else {
-								$('#email').addClass('is-valid').removeClass('is-invalid');
-							}
-						}
-					);
-				}
-			});
-
 			$('#reg_form').validate({
 				rules: {
 					email: {
 						required: true,
-						email: true
+						email: true,
+						uniqueEmail: true
 					},
 					pass: {
 						required: true,
 						minlength: 7
+
 					},
 					pass2: {
 						required: true,
-						minlength: 7
+						minlength: 7,
+						equalTo: '#pass'
+
 					}
 				},
 				messages: {
 					email: {
 						required: 'لطفا ایمیل را وارد نمایید',
-						email: 'لطفا ایمیل معتبر وارد نمایید'
+						email: 'لطفا ایمیل معتبر وارد نمایید',
+						uniqueEmail: 'ایمیل وارد شده قبلا ثبت شده است'
 					},
 					pass: {
 						required: 'لطفا کلمه عبور را وارد نمایید',
@@ -212,7 +197,8 @@ if ($frontend->post('btn_reg')) {
 					},
 					pass2: {
 						required: 'لطفا تکرار کلمه عبور را وارد نمایید',
-						minlength: 'کلمه عبور شما باید بیشتر از 7 حروف و عدد باشد'
+						minlength: 'کلمه عبور شما باید بیشتر از 7 حروف و عدد باشد',
+						equalTo: 'تکرار کلمه عبور با کلمه عبور یکسان نمیباشد'
 					}
 				},
 				errorPlacement: function(error, element) {
@@ -232,6 +218,50 @@ if ($frontend->post('btn_reg')) {
 					$(element).addClass("is-valid").removeClass("is-invalid");
 				}
 			});
+			jQuery.validator.addMethod("uniqueEmail", function(value, element) {
+				var response;
+				if (value != '' && validateEmail(value)) {
+					$.ajax({
+						type: "POST",
+						url: "ajax.php",
+						data: {
+							'do': 'checkEmail',
+							'email': value
+						},
+						async: false,
+						success: function(data) {
+							response = data;
+						}
+					});
+
+				} else
+					response = 0;
+
+				if (response == 2)
+					return true;
+				else
+					return false;
+			}, 'email is already exists');
+
+			$('#email').blur(function() {
+				var email = $(this).val();
+				if (email != '' && validateEmail(email)) {
+					$.post("ajax.php", {
+							'do': 'checkEmail',
+							'email': email
+						},
+						function(data) {
+							if (data == 1) {
+								$('#email').addClass('is-invalid').removeClass('is-valid');
+							} else {
+								$('#email').addClass('is-valid').removeClass('is-invalid');
+							}
+						}
+					);
+				}
+			});
+
+
 		});
 	</script>
 </body>

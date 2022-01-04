@@ -114,7 +114,6 @@ abstract class Base{
 	public function isLogin($key){
 		if (isset($_SESSION[$key])) {
 			return true;
-
 		}else{
 			return false;
 		}

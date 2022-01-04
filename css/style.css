@@ -4615,6 +4615,7 @@ div .social-buttons > li > a::before {
 .signinpanel {
     max-width: 780px;
     margin: 40px auto 40px auto;
+    direction:rtl;
 }
 
 .signinpanel .logopanel {

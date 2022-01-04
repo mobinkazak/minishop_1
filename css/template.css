@@ -26,7 +26,7 @@ form{
 	color: red;
 }
 
-.title-farsi: hover{
+.title-farsi:hover{
 	background-color: #323a45;
 }
 input:-moz-placeholder {
@@ -37,4 +37,20 @@ input:-ms-input-placeholder {
 }
 input::-webkit-input-placeholder {
     text-align: right;
+}
+
+
+
+
+
+.labels {
+    font-size: 14px;
+	margin-top:10px !important;
+}
+
+.add-experience:hover {
+    background: #BA68C8;
+    color: #fff;
+    cursor: pointer;
+    border: solid 1px #BA68C8
 }

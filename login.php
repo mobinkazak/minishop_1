@@ -1,5 +1,17 @@
-<?php
-require_once 'loader.php';
+<?php require_once 'loader.php';
+
+if ($frontend->isLogin('user_id'))
+	$frontend->redirect('profile.php');
+
+
+if ($frontend->post('btn_log')) {
+	$res = $frontend->login();
+	if ($res > 0)
+		$frontend->redirect('profile.php');
+	else
+		$frontend->redirect("login.php?err=$res");
+}
+
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -19,10 +31,10 @@ require_once 'loader.php';
 
 	<!-- Fav icon -->
 	<link rel="shortcut icon" href="img/favicon.ico">
-
+<!-- 
 	<link href='https://fonts.googleapis.com/css?family=Lato:400,400italic,900,700,700italic,300' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700,600' rel='stylesheet' type='text/css'>
-	<link href='http://fonts.googleapis.com/css?family=Ubuntu:400,300,500,700' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Ubuntu:400,300,500,700' rel='stylesheet' type='text/css'> -->
 	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
 	<link rel="stylesheet" href="css/bootstrap.min.css">
@@ -70,18 +82,24 @@ require_once 'loader.php';
 
 				<div class="row">
 
-					<div class="col-md-6 mx-auto col-md-offset-1">
+					<div class="col-md-6 mx-auto">
+						<?php
+							$frontend->setAlert('err', '-1', 'danger', 'لطفا فیلد های زیر را وارد کنید');
+							$frontend->setAlert('err', '-2', 'danger', 'برای ورود به حساب کاربری ایمیل و پسورد خود را وارد کنید');
+							$frontend->setAlert('msg', 'logout', 'success', 'خروج از سیستم با موفقیت انجام شد');
+							$frontend->setAlert('err', 'logup', 'danger', 'برای دسترسی به این قسمت لطفا وارد شوید');
 
-						<form method="post" autocomplete="off" action="">
+						?>
+						<form method="post" id="log_form" autocomplete="off" action="">
 							<h4 class="nomargin">ورود</h4>
-							<p class="mt5 mb20">برای دسترسی به حساب تان وارد شوید</p>
+							<p class="mt5 mb20">برای دسترسی به حساب خود وارد شوید</p>
 							<div class="input-group" style="align-items: flex-end !important;">
 								<div class="input-group-prepend" style="margin-left:-2px !important;border-top-left-radius:0;border-bottom-left-radius:0;">
 									<span class="input-group-text" style="padding:11px .75rem !important;border-radius: 0 !important;">
 										<i class="fa fa-user"></i>
 									</span>
 								</div>
-								<input type="text" class="form-control" placeholder="ایمیل خود را وارد نمایید" />
+								<input name="email" id="email" dir="ltr" type="text" class="form-control" placeholder="ایمیل خود را وارد نمایید" />
 							</div>
 
 							<div class="input-group" style="align-items: flex-end !important;">
@@ -90,14 +108,13 @@ require_once 'loader.php';
 										<i class="fa fa-lock"></i>
 									</span>
 								</div>
-							<input type="password" class="form-control" placeholder="کلمه عبور خود را وارد نمایید" />
-
+								<input name="pass" id="pass" dir="ltr" type="password" class="form-control" placeholder="کلمه عبور خود را وارد نمایید" />
 							</div>
 
 							<div class="mt-1 mx-1">
-							<a href="#"><small>کلمه عبور خود را فراموش کرده اید؟</small></a>
+								<a href="/account_recovery.php"><small>کلمه عبور خود را فراموش کرده اید؟</small></a>
 							</div>
-							<button class="btn btn-success btn-block py-2">ورود</button>
+							<button class="btn btn-success btn-block py-2" name="btn_log" type="submit" value="1">ورود</button>
 							<div class="mt-3 text-center">
 								اگر هنوز ثبت نام نکرده اید.لطفا
 								<a class="border-bottom" href="<?php print SITE_URL; ?>/register.php"><strong>کلیک</strong></a>
@@ -134,6 +151,47 @@ require_once 'loader.php';
 	<script src="js/owl.carousel.min.js"></script>
 	<script src="js/main.js"></script>
 	<script src="js/app.js"></script>
+	<script src="js/jquery.validate.js"></script>
+	<script>
+		$(document).ready(function () {
+			$('#log_form').validate({
+				rules: {
+					email: {
+						required: true,
+						email: true
+					},
+					pass: {
+						required: true
+					}
+				},
+				messages: {
+					email: {
+						required: 'لطفا ایمیل را وارد نمایید',
+						email: 'لطفا ایمیل معتبر وارد نمایید'
+					},
+					pass: {
+						required: 'لطفا کلمه عبور را وارد نمایید'
+					}
+				},
+				errorPlacement: function(error, element) {
+					// Add the `invalid-feedback` class to the error element
+					error.addClass("invalid-feedback");
+
+					if (element.prop("type") === "checkbox") {
+						error.insertAfter(element.next("label"));
+					} else {
+						error.insertAfter(element);
+					}
+				},
+				highlight: function(element, errorClass, validClass) {
+					$(element).addClass("is-invalid").removeClass("is-valid");
+				},
+				unhighlight: function(element, errorClass, validClass) {
+					$(element).addClass("is-valid").removeClass("is-invalid");
+				}
+			});
+		});
+	</script>
 
 </body>
 
