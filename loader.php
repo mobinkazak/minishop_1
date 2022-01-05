@@ -7,7 +7,6 @@ date_default_timezone_set('Asia/Tehran');
 
 require_once 'config.php';
 require_once 'lib/jdf.php';
-// require_once 'lib/PHPMailer.php';
 require_once 'lib/base.php';
 
 if (stristr($_SERVER['REQUEST_URI'],'/admin/')) {

@@ -2,7 +2,18 @@
 
 if ($frontend->isLogin('user_id'))
     $frontend->redirect('profile.php');
-
+if ($frontend->post('recover_btn')) {
+    $email=$frontend->safeString($frontend->post('email'));
+    $res = $frontend->accountRecovery();
+    if ($res == false) {
+        $frontend->redirect('?err=not_found');
+    } else {
+        $subject="بازیابی حساب کاربری";
+        $body=$res['password'];
+        $frontend->sendEmail($email,$subject,$body);
+        $frontend->redirect('?rec=1');
+    }
+}
 
 
 ?>
@@ -80,24 +91,30 @@ if ($frontend->isLogin('user_id'))
             <div class="signuppanel">
 
                 <div class="row">
+
                     <div class="col-md-6 mx-auto border">
+                        <div class="mt-2 text-center">
+                            <?php
+                            $frontend->setAlert('err', 'not_found', 'warning', 'ایمیل وارد شده در سیستم یافت نشد');
+                            $frontend->setAlert('rec', '1', 'success', 'کلمه عبور به ایمیل شما با موفقیت ارسال شد');
+                            ?>
+                        </div>
                         <div class="text-center">
                             <h3 class="pt-3"><i class="fa fa-lock fa-4x"></i></h3>
-                            <h3 class="text-center">درخواست بازیابی کلمه عبور</h3>
+                            <h3>درخواست بازیابی کلمه عبور</h3>
                             <p>برای بازیابی کلمه عبور لطفا ایمیل خود را وارد نمایید</p>
-                            <div class="panel-body">
-                                <form id="recovery_form" class="py-0" action="" autocomplete="off" method="post">
-                                    <div class="form-group">
-                                        <input id="email" name="email" placeholder="ایمیل" class="form-control" type="email">
-                                    </div>
-                                    <div class="form-group">
-                                        <input name="recover-submit" class="btn btn-primary btn-block" value="بازیابی" type="submit">
-                                    </div>
-                                </form>
-                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <form id="recovery_form" class="py-0" action="" autocomplete="off" method="post">
+                                <div class="form-group">
+                                    <input id="email" dir="ltr" name="email" placeholder="ایمیل" class="form-control" type="email">
+                                </div>
+                                <div class="form-group">
+                                    <input name="recover_btn" class="btn btn-primary btn-block" value="بازیابی" type="submit">
+                                </div>
+                            </form>
                         </div>
                     </div>
-
                 </div><!-- row -->
 
 
@@ -129,7 +146,36 @@ if ($frontend->isLogin('user_id'))
     <script src="js/jquery.validate.js"></script>
     <script>
         $(document).ready(function() {
+            $('#recovery_form').validate({
+                rules: {
+                    email: {
+                        required: true,
+                        email: true
+                    }
+                },
+                messages: {
+                    email: {
+                        required: 'لطفا ایمیل را وارد نمایید',
+                        email: 'لطفا ایمیل معتبر وارد نمایید'
+                    }
+                },
+                errorPlacement: function(error, element) {
+                    // Add the `invalid-feedback` class to the error element
+                    error.addClass("invalid-feedback");
 
+                    if (element.prop("type") === "checkbox") {
+                        error.insertAfter(element.next("label"));
+                    } else {
+                        error.insertAfter(element);
+                    }
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass("is-invalid").removeClass("is-valid");
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).addClass("is-valid").removeClass("is-invalid");
+                }
+            });
         });
     </script>
 

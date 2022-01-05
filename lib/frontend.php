@@ -151,4 +151,16 @@ class Frontend extends Base
 		return 1;
 		
 	}
+	public function accountRecovery(){
+		$email=$this->safeString($this->post('email'));
+		$q="SELECT * FROM users WHERE email='$email' AND status='1' ";
+		$res=$this->query($q);
+		$row=$this->getRow($res);
+		$this->freeResult($res);
+		if(isset($row['id'])){
+			return true;
+		}else{
+			return false;
+		}
+	}
 }

@@ -142,7 +142,7 @@ if ($frontend->get('del') == 1) {
                             ?>
                         </div>
                         <div class="p-3 pb-5 pt-3">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <h4 class="text-right">مشخصات کاربری</h4>
                             </div>
                             <form action="" enctype="multipart/form-data" class="border-0 p-0" style="box-shadow:0 0 0 !important;" method="post" autocomplete="off">
@@ -160,14 +160,14 @@ if ($frontend->get('del') == 1) {
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label for="email" class="control-label labels">ایمیل</label>
-                                        <input type="text" class="form-control" placeholder="ایمیل" name="email" id="email" value="<?php print $profile['email']; ?>">
+                                        <input type="text" dir="ltr" class="form-control" placeholder="ایمیل" name="email" id="email" value="<?php print $profile['email']; ?>">
                                         <div class="alert-override mt-1">
                                             <?php $frontend->setAlert('e', '-2', 'danger', 'ایمیل وارد شده قبلا ثبت شده است'); ?>
                                         </div>
                                         <label for="mobile" class="control-label labels">موبایل</label>
-                                        <input type="text" class="form-control" placeholder="موبایل" name="mobile" id="mobile" value="<?php print $profile['mobile']; ?>">
+                                        <input type="text" dir="ltr" class="form-control" placeholder="موبایل" name="mobile" id="mobile" value="<?php print $profile['mobile']; ?>">
                                         <label for="address" class="control-label labels">آدرس</label>
-                                        <textarea name="address" rows="10" id="address" class="form-control"><?php $profile['address'] ?></textarea>
+                                        <textarea name="address" rows="4" id="address" class="form-control"><?php $profile['address'] ?></textarea>
                                         <?php
                                         if (!empty($profile['avatar']) && file_exists($profile['avatar'])) {
                                         ?>
@@ -196,7 +196,7 @@ if ($frontend->get('del') == 1) {
                             <?php $frontend->setAlert('c', '2', 'success', 'کلمه عبور با موفقیت تغییر یافت'); ?>
                             <?php $frontend->setAlert('e', '-5', 'danger', 'اگر میخواهید کلمه عبور خود را تغییر دهید لطفا فیلد زیر را وارد کنید'); ?>
                         </div>
-                        <div class="p-3 pt-2 pb-5">
+                        <div class="px-2 pt-3 pb-5">
                             <form action="" class="border-0 p-0" style="box-shadow:0 0 0 !important;" method="post" autocomplete="off">
                                 <h5>اگر لازم به تغییر کلمه عبور باشید فیلد های زیر را وارد کنید</h5>
                                 <div class="row">
