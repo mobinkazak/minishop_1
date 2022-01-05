@@ -48,9 +48,9 @@ if ($frontend->isLogin('user_id'))
 
     <script src="js/vendor/modernizr-2.6.2.min.js"></script>
     <style>
-        form{
-            border:none !important;
-            box-shadow:none !important;
+        form {
+            border: none !important;
+            box-shadow: none !important;
         }
     </style>
 </head>
@@ -86,20 +86,14 @@ if ($frontend->isLogin('user_id'))
                             <h3 class="text-center">درخواست بازیابی کلمه عبور</h3>
                             <p>برای بازیابی کلمه عبور لطفا ایمیل خود را وارد نمایید</p>
                             <div class="panel-body">
-
-                                <form id="recovery_form" action="" autocomplete="off" method="post">
-
+                                <form id="recovery_form" class="py-0" action="" autocomplete="off" method="post">
                                     <div class="form-group">
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
-                                            <input id="email" name="email" placeholder="ایمیل" class="form-control" type="email">
-                                        </div>
+                                        <input id="email" name="email" placeholder="ایمیل" class="form-control" type="email">
                                     </div>
                                     <div class="form-group">
                                         <input name="recover-submit" class="btn btn-primary btn-block" value="بازیابی" type="submit">
                                     </div>
                                 </form>
-
                             </div>
                         </div>
                     </div>

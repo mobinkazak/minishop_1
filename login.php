@@ -111,8 +111,8 @@ if ($frontend->post('btn_log')) {
 								<input name="pass" id="pass" dir="ltr" type="password" class="form-control" placeholder="کلمه عبور خود را وارد نمایید" />
 							</div>
 
-							<div class="mt-1 mx-1">
-								<a href="/account_recovery.php"><small>کلمه عبور خود را فراموش کرده اید؟</small></a>
+							<div class="mt-2 mx-1">
+								<a href="/account_recovery.php"><small style="font-size:90%">کلمه عبور خود را فراموش کرده اید؟</small></a>
 							</div>
 							<button class="btn btn-success btn-block py-2" name="btn_log" type="submit" value="1">ورود</button>
 							<div class="mt-3 text-center">

@@ -24,6 +24,10 @@ $(document).ready(function() {
 	});
 
 });
+function redirect(url)
+{
+    location.href = url;
+}
 
 function validateEmail(email)
 {
