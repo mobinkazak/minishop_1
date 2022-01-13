@@ -43,7 +43,11 @@
 	<link rel="stylesheet" href="css/font-face.css">
 	<link rel="stylesheet" href="css/template.css">
 	<link rel="stylesheet" type="text/css" href="css/revolutionslider_settings.css" media="screen" />
-
+	<style>
+		.active{
+			background:#22bed4;
+		}
+	</style>
 	<script src="js/vendor/modernizr-2.6.2.min.js"></script>
 </head>
 

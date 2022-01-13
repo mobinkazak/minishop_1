@@ -86,11 +86,10 @@ class Backend extends Base{
 		$id=$_SESSION['admin_id'];
 		$currentProfile=$this->getProfile();
 		$path="../$currentProfile[avatar]";
-		$path2="avatars/avatar.png";
 		if (!empty($currentProfile['avatar']) && file_exists($path)) {
 			unlink($path);
 		}
-		$q="UPDATE users SET avatar='$path2' WHERE id='$id'";
+		$q="UPDATE users SET avatar='' WHERE id='$id'";
 		$this->query($q);
 	}
 	public function checkCategory($title,$parent_id){
@@ -294,7 +293,6 @@ class Backend extends Base{
 		$val=$this->toInt($val);
 		$q="UPDATE products SET status='$val',edited_date='$date' WHERE id='$id'";
 		return $this->query($q);
-
 	}
 	public function changeSpecialProd($id,$val){
 		$date=date('Y-m-d H:i:s');
@@ -321,7 +319,6 @@ class Backend extends Base{
 		$id=$this->toInt($id);
 		$q="SELECT * FROM product_image WHERE product_id='$id'";
 		return $this->query($q);
-
 	}
 	public function updateProdStep1($id){
 		$id=$this->toInt($id);
@@ -386,5 +383,88 @@ class Backend extends Base{
 		}else{
 			return -4;
 		}
+	}
+	public function changeUserType($id,$val){
+		$id=$this->toInt($id);
+		$val=$this->toInt($val);
+		$q="UPDATE users SET is_admin='$val' WHERE id='$id'";
+		$this->query($q);
+		return $val;
+	}
+	public function changeUserStatus($id,$val){
+		$id=$this->toInt($id);
+		$val=$this->toInt($val);
+		$q="UPDATE users SET status='$val' WHERE id='$id'";
+		$this->query($q);
+		return $val;
+
+	}
+	public function getUser($id){
+		$id=$this->toInt($id);
+		$q="SELECT * FROM users WHERE id='$id'";
+		$res=$this->query($q);
+		$row=$this->getRow($res);
+		$this->freeResult($res);
+		return $row;
+	}
+	public function deleteUser($id){
+		$id=$this->toInt($id);
+		$currentUser=$this->getUser($id);
+		$q="DELETE FROM users WHERE id='$id'";
+		$this->query($q);
+		$path="../$currentUser[avatar]";
+		if (!empty($currentUser['avatar']) && file_exists($path)) {
+			unlink($path);
+		}
+		return 1;
+	}
+	public function getUserWithId($id){
+		$id=$this->toInt($id);
+		$q="SELECT * FROM users WHERE id='$id' ";
+		$res=$this->query($q);
+		$row=$this->getRow($res);
+		$this->freeResult($res);
+		return $row;
+	}
+	public function deleteUserAvatar($id){
+		$id=$this->toInt($id);
+		$currentProfile=$this->getUserWithId($id);
+		$path="../$currentProfile[avatar]";
+		if (!empty($currentProfile['avatar']) && file_exists($path)) {
+			unlink($path);
+		}
+		$q="UPDATE users SET avatar='' WHERE id='$id'";
+		$this->query($q);
+	}
+	public function saveUserProfile($id){
+		$id=$this->toInt($id);
+		$currentProfile=$this->getUserWithId($id);
+		$fn=$this->safeString($this->post('fn'));
+		$ln=$this->safeString($this->post('ln'));
+		$mobile=$this->toInt($this->post('mobile'));
+		$address=$this->safeString($this->post('address'));
+		$email=$this->safeString($this->post('email'));
+		$pass=$this->safeString($this->post('password'));
+		$q="UPDATE users SET firstname='$fn',lastname='$ln',mobile='$mobile',address='$address',password='$pass' ";
+
+		if ($currentProfile['email']!=$email) {
+			if ($this->checkUserEmail($email)==0) {
+				$q .= " ,email='$email' ";
+			}else{
+				return -1;//email exist
+			}
+		}
+		$uploadRes=$this->uploadImg('img', '../avatars');
+		if (!is_int($uploadRes)) {
+			$q.=" ,avatar='avatars/$uploadRes'";
+		}else{
+			if($uploadRes==2)
+				return -4;
+			elseif($uploadRes==3)
+				return -5;
+		}
+		
+		$q.=" WHERE id='$id'";
+		return $this->query($q);
 	}
 }

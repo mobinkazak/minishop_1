@@ -31,8 +31,8 @@ if (stristr($_SERVER['REQUEST_URI'],'/admin/')) {
 	$frontend=new Frontend();
 
 	if($frontend->get('logout')==1){
+		$frontend->beforeLogout();
 		unset($_SESSION['user_id']);
-		session_destroy();
 	    $frontend->redirect('login.php?msg=logout');
 	}
 }

@@ -12815,7 +12815,7 @@ dl {
       bottom: 0; }
 
 .nav-tabs.tab-transparent .nav-item:first-child .nav-link:first-child {
-  padding-left: 0; }
+  padding-right: 0; }
   .rtl .nav-tabs.tab-transparent .nav-item:first-child .nav-link:first-child {
     padding-right: 0;
     padding-left: 1.25rem; }

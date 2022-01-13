@@ -1,13 +1,33 @@
 <?php require_once '../loader.php';
-$profile = $backend->getProfile();
+
+$email = $backend->safeString($backend->get('email'));
+$mobile = $backend->toInt($backend->get('mobile'));
+$firstname = $backend->safeString($backend->get('firstname'));
+$lastname = $backend->safeString($backend->get('lastname'));
+
+if ($backend->get('status') == '')
+    $status = -1;
+else
+    $status = $backend->toInt($backend->get('status'));
+
+if ($backend->get('is_admin') == '')
+    $is_admin = -1;
+else
+    $is_admin = $backend->toInt($backend->get('is_admin'));
+
+$url = "?email=$email&mobile=$mobile&firstname=$firstname&lastname=$lastname&status=$status&is_admin=$is_admin";
+
+$uid=$backend->get('uid');
+$user = $backend->getUserWithId($uid);
+
 if ($backend->post('btn_save')) {
-    $res = $backend->saveProfile();
-    $backend->redirect('?t=' . $res);
+    $res = $backend->saveUserProfile($uid);
+    $backend->redirect("$url&p=$backend->page&uid=$uid&t=$res");
 }
 
 if ($backend->get('del') == 1) {
-    $backend->delAvatar();
-    $backend->redirect('?m=d1');
+    $backend->deleteUserAvatar($uid);
+    $backend->redirect("$url&p=$backend->page&uid=$uid&m=d1");
 }
 
 ?>
@@ -18,7 +38,7 @@ if ($backend->get('del') == 1) {
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>مشخصات</title>
+    <title>ویرایش مشخصات کاربری</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="assets/vendors/flag-icon-css/css/flag-icon.min.css">
@@ -53,7 +73,7 @@ if ($backend->get('del') == 1) {
                 <div class="modal-body">آیا مایل هستید عکس پروفایل شما حذف شود؟</div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">خیر</button>
-                    <button type="button" class="btn btn-danger" onclick="redirect('?del=1');">حذف</button>
+                    <button type="button" class="btn btn-danger" onclick="redirect('<?php print $url.'&p='.$backend->page.'&uid='.$uid ?>&del=1');">حذف</button>
                 </div>
             </div>
         </div>
@@ -75,7 +95,6 @@ if ($backend->get('del') == 1) {
                             <div class="card-body">
                                 <?php
                                 $backend->setAlert('t', '1', 'success', 'ویرایش با موفقیت انجام شد');
-                                $backend->setAlert('t', '0', 'success', 'ویرایش با موفقیت انجام شد');
                                 $backend->setAlert('m', 'd1', 'success', 'عکس پرفایل شما با موفقیت حذف شد');
                                 $backend->setAlert('t', '-4', 'danger', 'نوع فایل های قابل بارگذاری فقط (jpg,png,gif,jpeg) می باشد.لطفا مجدد تلاش فرمایید');
                                 $backend->setAlert('t', '-5', 'danger', 'بارگذاری عکس با مشکل مواجه شده است.لطفا مجدد تلاش فرمایید');
@@ -85,34 +104,39 @@ if ($backend->get('del') == 1) {
                                     <div class="row">
                                         <div class="form-group col">
                                             <label for="fn">نام</label><span class="star"></span>
-                                            <input type="text" class="form-control" name="fn" id="fn" value="<?php print $profile['firstname']; ?>">
+                                            <input type="text" class="form-control" name="fn" id="fn" value="<?php print $user['firstname']; ?>">
                                         </div>
                                         <div class="form-group col">
                                             <label for="ln">نام خانوادگی</label><span class="star"></span>
-                                            <input type="text" class="form-control" name="ln" value="<?php print $profile['lastname']; ?>" id="ln">
+                                            <input type="text" class="form-control" name="ln" value="<?php print $user['lastname']; ?>" id="ln">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="mobile">موبایل</label><span class="star"></span>
-                                        <input type="text" class="form-control" name="mobile" id="mobile" value="<?php print '0'.$profile['mobile']; ?>">
+                                        <input dir="ltr" type="text" class="form-control" name="mobile" id="mobile" value="<?php print "0$user[mobile]"; ?>">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="email1">ایمیل</label><span class="star"></span>
-                                        <input type="email" class="form-control" name="email" value="<?php print $profile['email']; ?>" id="email1">
+                                        <input dir="ltr" type="text" class="form-control" name="email" value="<?php print $user['email']; ?>" id="email1">
                                     </div>
                                     <?php $backend->setAlert('t', '-1', 'danger', 'ایمیل وارد شده وجود دارد'); ?>
+
+                                    <div class="form-group">
+                                        <label for="password">کلمه عبور</label><span class="star"></span>
+                                        <input dir="ltr" type="text" class="form-control" name="password" value="<?php print $user['password']; ?>" id="password1">
+                                    </div>
                                     <div>
                                         <div class="form-group">
                                             <label for="address">آدرس</label>
-                                            <textarea style="text-align:right !important;" rows="4" class="form-control" name="address" id="address"><?php print $profile['address'] ?></textarea>
+                                            <textarea style="text-align:right !important;" rows="4" class="form-control" name="address" id="address"><?php print $user['address'] ?></textarea>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label>عکس پروفایل</label>
                                         <?php
-                                        $path = '../' . $profile['avatar'];
-                                        if (!empty($profile['avatar']) && file_exists($path)) {
+                                        $path = '../' . $user['avatar'];
+                                        if (!empty($user['avatar']) && file_exists($path)) {
                                         ?>
                                             <a href="<?php print $path; ?>" target="_blank">
                                                 <img style="width:150px;height:150px;" src="<?php print $path; ?>" alt="avatar">
@@ -135,32 +159,9 @@ if ($backend->get('del') == 1) {
                                         }
                                         ?>
                                     </div>
-                                    <div class="px-3" style="background-color: #fff3cd;border-radius: 1%;" style="height: 300px;">
-                                        <div class="text-center">
-                                            <?php $backend->setAlert(' ', '', 'warning', 'اگر لازم به تغییر رمزعبور خود باشید لطفا فیلدهای زیر را پر کنید'); ?>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="password1">رمزعبور فعلی</label>
-                                            <input type="password" class="form-control" name="password1" id="password1">
-                                        </div>
-                                        <?php $backend->setAlert('t', '-2', 'danger', 'رمزعبور فعلی صحیح نمی باشد'); ?>
-
-                                        <div class="form-group">
-                                            <label for="password2">رمزعبور جدید</label>
-                                            <input type="password" class="form-control" name="password2" id="password2">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="password3"> تکرار رمزعبور جدید </label>
-                                            <input type="password" class="form-control" name="password3" id="password3">
-                                        </div>
-                                        <?php $backend->setAlert('t', '-3', 'danger', 'تکرار رمزعبور جدید صحیح نمی باشد'); ?>
-
-                                        <div class="alert alert-warning"></div>
-                                    </div>
-
 
                                     <button type="submit" name="btn_save" class="btn btn-primary mr-2" value="1">ذخیره</button>
-                                    <a href="<?php print ADMIN_URL ?>index.php" class="btn btn-light">لغو</a>
+                                    <a href="<?php print ADMIN_URL."list_users.php$url&p=$backend->page" ?>" class="btn btn-light">بازگشت</a>
                                 </form>
                             </div>
                         </div>

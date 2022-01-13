@@ -96,18 +96,26 @@ if (!isset($product['id'])) {
 								<div class="col-md-5 col-sm-6 summary-before ">
 
 									<div class="product-slider product-shop">
-										<span class="onsale <?php ($product['is_special'] > 0) ? print 'd-block' : print 'd-none'; ?>"><?php ($product['is_special'] > 0) ? print 'فروش ویژه' : print ''; ?></span>
+										<span class="onsale <?php ($product['is_special'] > 0) ? print 'd-block' : print 'd-none'; ?>"><?php ($product['is_special'] > 0) ? print 'محصول ویژه' : print ''; ?></span>
 										<ul class="slides">
-											<li data-thumb="img/temp-images/hoodie_7_front-140x140.jpg">
-												<a href="img/temp-images/hoodie_7_front.jpg" data-imagelightbox="gallery" class="hoodie_7_front">
-													<img src="img/temp-images/hoodie_7_front-470x470.jpg" class="attachment-shop_single" alt="image">
+											<li data-thumb="<?php print $product['thumb_img']; ?>">
+												<a href="<?php print $product['thumb_img']; ?>" data-imagelightbox="gallery" class="hoodie_7_front">
+													<img src="<?php print $product['thumb_img']; ?>" class="img-responsive attachment-shop_single" alt="<?php print $product['title_fa']; ?>">
 												</a>
 											</li>
-											<li data-thumb="img/temp-images/hoodie_7_back-140x140.jpg">
-												<a href="img/temp-images/hoodie_7_back.jpg" data-imagelightbox="gallery" class="hoodie_7_back">
-													<img src="img/temp-images/hoodie_7_back-470x470.jpg" class="attachment-shop_single" alt="image">
-												</a>
-											</li>
+											<?php
+											$product_image = $frontend->getImageProductList($product['id']);
+											while ($pimg = $frontend->getRow($product_image)) {
+											?>
+												<li data-thumb="<?php print $pimg['img']; ?>">
+													<a href="<?php print $pimg['img']; ?>" data-imagelightbox="gallery" class="hoodie_7_back">
+														<img src="<?php print $pimg['img']; ?>" class="img-responsive attachment-shop_single" alt="<?php print $pimg['alt']; ?>">
+													</a>
+												</li>
+											<?php
+											}
+											?>
+
 
 										</ul>
 									</div>
@@ -130,14 +138,14 @@ if (!isset($product['id'])) {
 									<?php
 									if ($product['discount'] == '') {
 									?>
-									<div>
-										<p class="price">
-											<ins>
-												<span class="amount"><?php print number_format($frontend->toInt($product['price'])); ?></span>
-												<span>تومان</span>
-											</ins>
-										</p>
-									</div>
+										<div>
+											<p class="price">
+												<ins>
+													<span class="amount"><?php print number_format($frontend->toInt($product['price'])); ?></span>
+													<span>تومان</span>
+												</ins>
+											</p>
+										</div>
 									<?php
 									} else {
 									?>
@@ -160,15 +168,35 @@ if (!isset($product['id'])) {
 									<p>
 										<?php print $product['short_desc'] ?>
 									</p>
-									<form class="variations_form cart" method="post">
+									<form class="variations_form cart" action="" method="post">
 										<div class="quantity">
-											<input type="number" step="1" name="quantity" value="1" title="Qty" class="input-text qty text" size="4" min="1">
+											<input type="number" step="1" name="num" value="1" class="input-text qty text" size="4" min="1">
 										</div>
 
 										<button type="submit" class="cart-button">افزودن به سبد خرید</button>
 
 									</form>
 									<div class="product_meta">
+										<?php
+										if ($product['model'] != '') {
+										?>
+											<span class="sku_wrapper">
+												مدل محصول :
+												<span><?php print $product['model'] ?></span>
+											</span>
+										<?php
+										}
+										?>
+										<?php
+										if ($product['code'] != '') {
+										?>
+											<span class="sku_wrapper">
+												کد محصول :
+												<span><?php print $product['code'] ?></span>
+											</span>
+										<?php
+										}
+										?>
 										<span class="posted_in">دسته بندی ها:
 											<a href="#" rel="tag">
 												<?php
@@ -194,7 +222,7 @@ if (!isset($product['id'])) {
 							<div class="wrapper-description">
 
 								<ul class="tabs-nav clearfix">
-									<li class="active">درباره محصول</li>
+									<li class="active">توضیحات</li>
 									<li>دیدگاه کاربران</li>
 								</ul>
 								<div class="tabs-container product-comments">
@@ -205,9 +233,9 @@ if (!isset($product['id'])) {
 											<h2>درباره محصول</h2>
 
 											<p>
-												<?php print html_entity_decode($product['long_desc']); ?>
+												<?php print html_entity_decode($product['long_desc'], ENT_QUOTES, 'utf-8'); ?>
 											</p>
-
+											<hr>
 											<h3 class="section-title">محصولات مرتبط</h3>
 
 											<?php require_once 'template/releated_prod.php'; ?>

@@ -141,15 +141,8 @@ if($frontend->isLogin('user_id'))
 				<div class="navy">
 					<ul>
 						<!-- Main menu -->
-						<li><a href="#">صفحه اصلی</a>
-							<!-- Submenu -->
-							<ul>
-
-								<li><a href="index.html">Home 1</a></li>
-								<li><a href="index-2.html"><span>Home 2</span></a></li>
-								<li><a href="index-3.html"><span>Home 3</span></a></li>
-
-							</ul>
+						<li class="active">
+							<a  href="#">صفحه اصلی</a>
 						</li>
 
 						<li><a href="#">Features</a>

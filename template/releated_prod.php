@@ -12,7 +12,7 @@
 				<div class="product  item first ">
 					<article>
 						<figure>
-							<span style="border-left:0 !important;z-index: 999999;right:0;font-size:13px" class="rounded-sm w-100 position-absolute py-1 text-white bg-success <?php ($releatedRow['is_special']>0)?print 'd-inline':print 'd-none'; ?>"><?php ($releatedRow['is_special']>0)?print 'فروش ویژه':print ''; ?></span>
+							<span style="border-left:0 !important;z-index: 999999;right:0;font-size:13px" class="rounded-sm w-100 position-absolute py-1 text-white bg-success <?php ($releatedRow['is_special']>0)?print 'd-inline':print 'd-none'; ?>"><?php ($releatedRow['is_special']>0)?print 'محصول ویژه':print ''; ?></span>
 
 							<a href="<?php print $prodUrl; ?>">
 								<img src="<?php print $releatedRow['thumb_img']; ?>" class="img-responsive" alt="<?php print $releatedRow['title_fa']; ?>" title="<?php print $releatedRow['title_fa']; ?>">
@@ -23,7 +23,7 @@
 							</figcaption>
 
 						</figure>
-						<h4 class="title py-2 mb-0"><a target="_blank" href="<?php print $prodUrl; ?>" ><?php print $releatedRow['title_fa'] ?></a></h4>
+						<h4 class="title py-2 mb-0 text-truncate"><a target="_blank" href="<?php print $prodUrl; ?>" ><?php print $releatedRow['title_fa'] ?></a></h4>
 						
 						<div class=" col-md-12 col-sm-12 py-2 bg-info text-white" dir="rtl" style="border-bottom:1px solid #e5e5e5;border-left:0 !important;<?php ($releatedRow['discount']>0)?print 'text-decoration: line-through;':print ''; ?> " >
 							<span><?php print number_format($frontend->toInt($releatedRow['price'])); ?></span>

@@ -85,9 +85,9 @@ if ($frontend->post('btn_log')) {
 					<div class="col-md-6 mx-auto">
 						<?php
 							$frontend->setAlert('err', '-1', 'danger', 'لطفا فیلد های زیر را وارد کنید');
-							$frontend->setAlert('err', '-2', 'danger', 'برای ورود به حساب کاربری ایمیل و پسورد خود را وارد کنید');
+							$frontend->setAlert('err', '-2', 'danger', 'ایمیل یا کلمه عبور وارد شده اشتباه میباشد');
 							$frontend->setAlert('msg', 'logout', 'success', 'خروج از سیستم با موفقیت انجام شد');
-							$frontend->setAlert('err', 'logup', 'danger', 'برای دسترسی به این قسمت لطفا وارد شوید');
+							$frontend->setAlert('err', 'logup', 'danger', 'برای دسترسی به این قسمت باید وارد شوید');
 
 						?>
 						<form method="post" id="log_form" autocomplete="off" action="">

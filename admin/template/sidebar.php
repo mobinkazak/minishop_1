@@ -36,11 +36,18 @@
             </li>
 
             <li class="nav-item nav-item2">
-              <a class="nav-link" href="pages/icons/mdi.html">
-                <span class="menu-title">Icons</span>
+              <a class="nav-link" data-toggle="collapse" href="#users_mng" aria-expanded="false">
+                <span class="menu-title">مدیریت کاربران</span><i class="mr-2 menu-arrow"></i>
                 <span class="icon-bg"><i class="mdi mdi-contacts menu-icon"></i></span>
               </a>
+              <div class="collapse" id="users_mng">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="<?php print ADMIN_URL; ?>add_users.php">ثبت کاربر جدید</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="<?php print ADMIN_URL; ?>list_users.php">لیست کاربران</a></li>
+                </ul>
+              </div>
             </li>
+
             <li class="nav-item nav-item2">
               <a class="nav-link" href="pages/forms/basic_elements.html">
                 <span class="menu-title">Forms</span>
@@ -76,7 +83,18 @@
                   <div>
                     <div class="d-flex align-items-center">
                       <div class="sidebar-profile-img">
-                        <img class="img-avatar img-avatar48" style="width:40px;height:30px;" src="<?php print '../'.$profile['avatar']; ?>" alt="image">
+                        <?php
+            if (!empty($profile['avatar']) && file_exists($profile['avatar'])) {
+            ?>
+            <img class="img-avatar img-avatar48" style="margin-left: 4px;width:40px;height:28px;" src="<?php print "../$profile[avatar]" ?>" alt="image">
+            <?php
+            }else{
+              ?>
+              <img class="img-avatar img-avatar48" style="margin-left: 4px;width:40px;height:28px;" src="../avatars/avatar.png" alt="image">
+
+              <?php
+            }
+            ?>
                       </div>
                       <div class="sidebar-profile-text mr-3">
                         <p class="mb-1"><?php print $profile['firstname'].' '.$profile['lastname']; ?></p>

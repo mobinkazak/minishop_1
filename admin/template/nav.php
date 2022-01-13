@@ -50,7 +50,18 @@
     <div class="text-center pull-left dropdown">
       <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
           <div class="nav-profile-img">
-            <img class="img-avatar img-avatar48" style="margin-left: 4px;width:40px;height:28px;" src="<?php print '../'.$profile['avatar']; ?>" alt="image">
+            <?php
+            if (!empty($profile['avatar']) && file_exists($profile['avatar'])) {
+            ?>
+            <img class="img-avatar img-avatar48" style="margin-left: 4px;width:40px;height:28px;" src="<?php print "../$profile[avatar]" ?>" alt="image">
+            <?php
+            }else{
+              ?>
+              <img class="img-avatar img-avatar48" style="margin-left: 4px;width:40px;height:28px;" src="../avatars/avatar.png" alt="image">
+
+              <?php
+            }
+            ?>
           </div>
           <div class="nav-profile-text">
             <p class="m-0 text-black"><?php print $profile['firstname'].' '.$profile['lastname'] ?></p>

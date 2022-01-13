@@ -83,6 +83,12 @@ class Frontend extends Base
 		$this->freeResult($res);
 		return $row;
 	}
+	public function beforeLogout(){
+		$date=date("Y-m-d H:i:s");
+		$id=$_SESSION['user_id'];
+		$q="UPDATE users SET last_login='$date' WHERE id='$id'";
+		$this->query($q);
+	}
 
 	public function updateProfile()
 	{
@@ -162,5 +168,10 @@ class Frontend extends Base
 		}else{
 			return false;
 		}
+	}
+	public function getImageProductList($id){
+		$id=$this->toInt($id);
+		$q="SELECT * FROM product_image WHERE product_id='$id'";
+		return $this->query($q);
 	}
 }
